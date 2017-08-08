@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Guildhon的博客</title>
+    <meta name="description" content="">
+    <!-- responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <!-- core css -->
+    <link rel="stylesheet" href="vendor/core.css">
+</head>
+
+<body>
+
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-inner">
+            <div class="sidebar-page" id="sidebar-page"></div>
+        </div>
+    </div>
+
+    <!-- main -->
+    <div class="main" id="main">
+        <div class="main-inner">
+            <!-- 主内容 -->
+            <div class="main-page markdown-body" id="main-page"></div>
+
+            <!-- disqus START -->
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES * * */
+                var disqus_shortname = 'silentor';
+                
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            <!-- disqus END -->
+
+            <!-- 底部 -->
+            <div class="main-page-footer main-page markdown-body" id="main-page-footer"></div>
+        </div>
+    </div>
+</body>
+<script src="vendor/zepto-1.1.6.min.js"></script>
+
+<!-- extensions START-->
+<script src="vendor/extension/disqus-visibility/main.js"></script> 
+
+<!-- slide backgournd -->
+<link rel="stylesheet" href="vendor/extension/sidebar-background/main.css">
+<script src="vendor/extension/sidebar-background/main.js"></script> 
+
+<!-- load-progress -->
+<link rel="stylesheet" href="vendor/extension/load-progress/dist/main.css">
+<script src="vendor/extension/load-progress/dist/main.js"></script> 
+<!-- extensions END-->
+
+<!-- core.js -->
+<script src="vendor/core.js"></script> 
+
+</html>
