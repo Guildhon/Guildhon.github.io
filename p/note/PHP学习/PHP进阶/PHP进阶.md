@@ -947,3 +947,4 @@ function_exists($functionName); // 如果存在返回true,否则返回fasle;
 
 
 
+
