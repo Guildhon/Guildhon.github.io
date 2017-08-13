@@ -945,6 +945,12 @@ function test() {
 }
 // 也可以通过$GLOBAL[键名]
 ```
+取变量地址，传递引用，只能传变量
+```
+function test(&$i) {
+	
+}
+```
 
 
 
