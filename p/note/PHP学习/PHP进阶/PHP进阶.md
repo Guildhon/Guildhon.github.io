@@ -935,7 +935,16 @@ PHP的函数就是为了完成某些功能的代码块，分为系统函数和�
 ```
 function_exists($functionName); // 如果存在返回true,否则返回fasle;
 ```
-
+在函数内不能直接使用全局变量
+```
+// 需要在函数内使用global定义后再使用
+$i = 1;
+function test() {
+	global $i;
+	echo $i;
+}
+// 也可以通过$GLOBAL[键名]
+```
 
 
 
