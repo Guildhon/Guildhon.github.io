@@ -151,7 +151,28 @@ SELECT
 SELECT 字段,字段  FROM 表名;
 SELECT 字段 AS 别名,字段 AS 别名  FROM 表名;
 ```
-
+GROUP BY  分组
+```
+SELECT sex FROM users GROUP BY sex;   // 结果为男，女两个结果
+```
+HAVING 分组条件
+```
+SELECT sex,age FROM users GROUP BY sex HAVING age>5;
+SELECT sex FROM users GROUP BY sex HAVING count(age)>5;  //或者采取聚合函数
+```
+ORDER BY 排序
+```
+SELECT * FROM users ORDER BY id DESC; // 按id倒序
+```
+LIMIT 限制查询数量
+```
+SELECT * FROM users LIMIT 2;
+SELECT * FROM users LIMIT 2,2; //从哪开始
+```
+```
+INSERT 字表 (username) SELECT username FROM 父表 WHERE age>=30;
+```
+子查询 是指出现在其他SQL语句内的SELECT语句 子查询嵌套在查询内部，且必须始终出现在圆括号内
 
 
 
