@@ -77,17 +77,24 @@ Handlebars.registerHelper('chiness', function(value) {
 ```
 块Helper
 ```
-<li {{#isfirst @index}} style="color:red;" {{/isfirst}}>
+<li {{#isfirst @index}} style="color:red;" {{/isfirst}}>    // 可以在里面使用{{else}}
 	{{@../index}}{{@index}}{{this}}
 </li>
 
-Handlebars.registerHelper('isfirst', function(value, options) {
+Handlebars.registerHelper('isfirst', function(value, options) {     
 	if (value == 0) {
 		return options.fn(this);
-	} 
+	} else {
+		return options.inverse(this);
+	}
 });
 ```
 Helper里面的this指的是当前模板上下文，可获取所需的值，也可赋予值。比如在Helper里面获取this的值，判断，给this赋予新的属性值，模板可通过if来判断产生新值
+
+当有类似HTML的代码数据时，不让handlebars当成字符串，使用三个大括号
+```
+{{{html}}}
+```
 
 
 
