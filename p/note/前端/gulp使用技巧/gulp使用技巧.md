@@ -22,6 +22,13 @@ My Note
 
 文件名添加md5后缀 gulp-rev
 
+优化PNG和JPG的插件 gulp-smushit （移除图片文件中不必要的数据，无损压缩工具，只能处理JPG和PNG）
+
+替换html里的代码 gulp-rev-collector
+
+同步任务 gulp-sequence
+
+
 #### 与Browser-Sync配合使用
 当前HTML文件发生改变时，浏览器自动刷新
 ```
@@ -68,4 +75,29 @@ gulp.task('sass', function() {
 });
 
 gulp.task('default', ['serve']);
+```
+
+文件目录可以定义生产和开发环境
+```
+var build = {
+	css: './build/css/',
+	img: './build/images/',
+	js: './build/js/'
+};
+var src = {
+	css: './src/css/',
+	img: './src/images/',
+	js: './src/js/'
+};
+```
+
+#### 使用Node.js已有的
+删除文件操作del
+```
+var del = require('del');
+gulp.task('del', function (){   
+	del([
+		'./build/**/*'        // 清空build目录
+	]);
+});
 ```
