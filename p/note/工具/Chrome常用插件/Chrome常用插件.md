@@ -10,3 +10,6 @@ My Note
 
 #### octotree
 更容易查看github的项目
+
+#### Vue.js devtools
+Vue.js调试工具
