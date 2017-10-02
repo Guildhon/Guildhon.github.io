@@ -4,6 +4,7 @@ My Note
 
 [gulp官网](http://www.gulpjs.com.cn/docs/getting-started/)
 [查看npm包](https://www.npmjs.com/)
+[其他人的教程](https://github.com/lin-xin/blog/issues/2)
 
 #### 常用gulp插件
 编译less gulp-less
