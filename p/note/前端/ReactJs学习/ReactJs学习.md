@@ -17,3 +17,62 @@ React
 1.学习成本偏高
 2.react本身做得东西很小，比如用react周边产品（全家桶）
 ```
+#### 使用jsx语法----可以在js里面书写HTML标签
+```
+1.书写格式
+	let a = <div>welcome div</div>;
+2.多个标签，需要一个根元素包裹
+	let a = <div><div>welcome div</div><span>span</span></div>;
+3.可以自由缩进，下面两种等价
+	let a = <div>
+				<div>welcome div</div>
+				<span>span</span>
+			</div>;
+	let a = (<div>
+				<div>welcome div</div>
+				<span>span</span>
+			</div>);
+4.单标记标签必须闭合
+	<img />
+5.使用class，样式类
+	<div className="abc"></div>
+style要写成json形式,json是js代码要用{}
+	<div style={{width:'200px'}}></div>
+6.jsx语法里面写js代码,要使用{}
+	var a = 'welcome china';
+	let b = <div>{a}</div>;
+7.事件名--驼峰命名法，单词首字母大写
+	function show(){
+		alert(1);
+	}
+	<div onClick={show}></div>
+```
+#### react开发模式
+1.直接引入文件;
+2.基于webpack.
+#### ReactDOM渲染
+ReactDOM.render(组件，位置);
+```
+<div id="app">
+</div>
+<script type="text/babel">
+	ReactDOM.render(
+		<h3>welcome</h3>,
+		document.querySelector('#app')
+	)
+</script>
+```
+#### 组件定义
+```
+// 定义组件
+class Title extends React.Component {
+	render(){
+		return <h3>welcome react</h3>
+	}
+}
+ReactDOM.render(
+	<Title />,
+	document.querySelector('#app')
+)
+```
+
