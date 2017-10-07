@@ -46,6 +46,10 @@ data: {
 	{{k}}  {{v}}
 </li>
 ```
+数组有重复数据
+```
+<li v-for="value in arr" track-by="$index" ></li>
+```
 ##### v-on:(click/keydown/......)    事件
 ```
 data:{
@@ -88,9 +92,33 @@ methods: {
 
 <input type='text' @keyup.13="show">   // 判断是否是回车，也可以改成enter
 ```
+自定义键盘信息
+```
+Vue.directive('on').keyCodes.ctrl = 17;
+```
 ##### v-show 显示隐藏
 ```
 <div v-show="true/false"></div>
+```
+#### 自定义指令
+实现DOM操作，比如拖拽
+```
+// 可以传参
+<script>
+	Vue.directive('read', function (){
+		this.el.style.background = 'red';
+	});
+</script>
+<span v-read >123</span>
+```
+##### 自定义元素指令
+```
+Vue.elementDirective('zns-red', function(){
+	bind: functio(){
+		......
+	}
+});
+<zns-red></zns-red>
 ```
 #### 属性 
 ##### v-bind:(src)
@@ -156,6 +184,31 @@ data:{
 #### 过滤器
 ```
 {{'abc'|uppercase}} // 字符串转大写
+```
+##### 自定义过滤器
+```
+<div>
+	{{a | toDou 1}}
+</div>
+<script>
+	Vue.filter('toDou', function(input, a){
+		console.log(a);   // 1
+		return input < 10 ? '0' + input : input;
+	});
+</script>
+```
+双向过滤器
+```
+// model -> view
+// view  -> model
+Vue.filter('xxx', function (){
+	read: function (input){    // model -> view
+
+	},
+	write: function (val){	  // view  -> model	
+
+	} 
+});
 ```
 #### 交互
 vue-resouce
@@ -238,4 +291,35 @@ b: {
 document.onclick = function () {
 	vm.b = 10;
 }
+```
+#### vue实例简单方法
+```
+vm.$el         元素el
+vm.$data       data
+vm.$options    可以访问实例的自定义属性
+vm.$destroy()  销毁对象
+vm.$log()      查看data状态
+```
+如果在new Vue里面不使用el的话
+```
+vm.$mount('#box');   // 手动挂载vue程序
+```
+#### 监听数据变化
+```
+data: {
+	a: 1,
+	b: {
+		name: 'guildhon'
+	}
+}
+// 浅度
+vm.$watch('a' function(){
+
+});
+// 深度，可以监听json
+vm.$watch('a' function(){
+
+}, {
+	deep: true
+});
 ```
