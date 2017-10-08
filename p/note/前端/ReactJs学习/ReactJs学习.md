@@ -75,4 +75,62 @@ ReactDOM.render(
 	document.querySelector('#app')
 )
 ```
+#### 参数
+```
+// 定义组件
+class Title extends React.Component {
+	render(){
+		return (<div>
+			<h3>welcome react</h3>
+			<h4>{this.props.a}</h4>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Title a="well" />,
+	document.querySelector('#app')
+)
+```
+// 弹出传参的数据
+```
+class Title extends React.Component {
+	show(){
+		alert(this.props.a);
+	}
+	render(){
+		return (<div>
+			<h3 onClick={this.show.bind(this)}>welcome react</h3>
+			<h4>{this.props.a}</h4>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Title a="well" />,
+	document.querySelector('#app')
+)
+```
+#### 改变this指向
+```
+a) call(this指向谁,arg1,arg2,......)  
+	function show(a,b){
+		// 弹出'abc',12,5
+		alert(`
+			this:${this}\n
+			a:${a}\n
+			b:${b}
+		`);
+	}
+	show.call('abc',12,5);	// 函数调用阶段改变this
+b) apply(this指向谁,[arg1,arg2,......])
+	show.apply('abc',[12,5]);  // 函数调用阶段改变this
+c) bind()   es5出现的
+	var cc = show.bind('abc');  // 函数定义阶段改变this
+	cc(12,5);             // 弹出'abc',12,5
+	show()                // this又变回window
+
+	也可以像call一样去写
+	var cc = show.bind('abc',12,5);
+	cc();
+```
+
 
