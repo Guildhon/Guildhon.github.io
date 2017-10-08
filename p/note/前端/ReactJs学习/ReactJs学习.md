@@ -76,6 +76,7 @@ ReactDOM.render(
 )
 ```
 #### 参数
+只能读 only read
 ```
 // 定义组件
 class Title extends React.Component {
@@ -132,5 +133,75 @@ c) bind()   es5出现的
 	var cc = show.bind('abc',12,5);
 	cc();
 ```
+#### 状态
+更新状态来更新视图
+```
+// 定义组件
+class Title extends React.Component {
+	constructor(){
+		super();   //调用父级构造函数，获得继承下来的属性
+		this.state = {
+			msg: 'welcome'
+		}
+	}
+	show(){
+		// 更新状态来更新视图
+		this.setState({
+			'msg': 'abc'
+		});
+	}
+	render(){
+		return (<div>
+			<h3 onClick={this.show.bind(this)}>welcome react</h3>
+			<h4>{this.state.msg}</h4>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Title />,
+	document.querySelector('#app')
+)
+```
+显示隐藏例子，this.setState 方法就修改状态值，每次修改以后，自动调用 this.render 方法，再次渲染组件
+```
+// 定义组件
+class Toggle extends React.Component {
+	constructor(){
+		super();   //调用父级构造函数，获得继承下来的属性
+		this.state = {
+			bShow: false
+		}
+	}
+	change(){
+		this.setState({
+			bShow: !this.state.bShow
+		});
+	}
+	render(){
+		let bShow = this.state.bShow ? 'block' : 'none';
+		return (<div>
+			<input type="button" value="按钮" onClick={this.change.bind(this)} />
+			<div className='box' style={{display: bShow}}></div>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Toggle />,
+	document.querySelector('#app')
+)
+```
+#### 获取某个元素
+```
+a) 事件触发时处理函数可拿到事件对象本身，获取当前元素
+	show(ev){
+		console.log(ev.target)
+	}
+b) 直接DOM操作
+	document.querySelector()
+c) react提供语法，钩子使用ref
+	this.refs.t1;
+	<input type="text" ref="t1">
+```
+
 
 
