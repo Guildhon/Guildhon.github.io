@@ -114,7 +114,7 @@ Vue.directive('on').keyCodes.ctrl = 17;
 ##### 自定义元素指令
 ```
 Vue.elementDirective('zns-red', function(){
-	bind: functio(){
+	bind: function(){
 		......
 	}
 });
@@ -322,4 +322,203 @@ vm.$watch('a' function(){
 }, {
 	deep: true
 });
+```
+#### 过渡（动画）
+本质走的是CSS3动画:transition,animation
+```
+<style>
+	.fade-transition{
+		transition: 1s all ease;
+	}
+	.fade-enter{
+		opacity: 0;
+	}
+	.fade-leave{
+		opacity: 1;
+	}
+</style>
+<div v-show="bSign" transition="fade"></div>
+```
+配合animate.css使用
+```
+Vue实例里面
+<div v-show="bSign" transition="fade"></div>
+transitions: {
+	fade: {
+		enterClass: '',
+		leaveClass: ''
+	}
+}
+```
+#### 组件
+全局组件
+```
+<div id="box">
+	<aaa></aaa>
+</div>
+var Aaa = Vue.extend({
+	template: '<h3>我是标题</h3>'
+});
+Vue.component('aaa',Aaa);
+```
+组件中放数据
+```
+var Aaa = Vue.extend({
+	data(){
+		return {
+			msg: 123
+		}
+	},
+	template: '<h3>{{msg}}</h3>'
+});
+```
+组件中加事件
+```
+// data必须是个函数，返回json
+var Aaa = Vue.extend({
+	data(){
+		return {
+			msg: 123
+		}
+	},
+	methods: {
+		change(){
+			this.msg = 'abc'
+		}
+	},
+	template: '<h3 @click="change">{{msg}}</h3>'
+});
+```
+局部组件
+```
+var Aaa = Vue.extend({
+	data(){
+		return {
+			msg: 123
+		}
+	},
+	methods: {
+		change(){
+			this.msg = 'abc'
+		}
+	},
+	template: '<h3 @click="change">{{msg}}</h3>'
+});
+var vm = new Vue({
+	el: '#box',
+	data: {
+
+	},
+	components: {
+		aaa: Aaa
+	}
+})
+```
+也可以直接使用
+```
+Vue.component('my-aaa',{
+	template: '<strong>strong</strong>'
+});
+```
+```
+var vm = new Vue({
+	el: '#box',
+	data: {
+
+	},
+	components: {
+		'my-aaa': {
+			template: '<h1>Big</h1>'
+		}
+	}
+})
+```
+将template的东西抽到其他地方
+```
+<div id="box">
+	<my-aaa></my-aaa>
+</div>
+<script type="x-template" id="aaa">
+	<h1>{{msg}}</h1>
+</script>
+<script>
+	var vm = new Vue({
+		el: '#box',
+		data: {
+
+		},
+		components: {
+			'my-aaa': {
+				data(){
+					return {
+						msg: 'test data'
+					}
+				},
+				template: '#aaa'
+			}
+		}
+	})
+</script>
+```
+也可以
+```
+<template id="aaa">
+	<h1>{{msg}}</h1>
+</template>
+```
+动态组件
+```
+<component :is="组件"></component>
+```
+父子组件
+```
+components: {
+	'aaa': {
+		data(){
+			return {
+				msg: '父组件数据'
+			}
+		},
+		template: '<h1>aaa组件</h1><bbb></bbb>',
+		components: {
+			'bbb': {
+				template: '<h2>bbb</h2>'
+			}
+		}
+	}
+}
+```
+组件数据传递
+```
+<div id="box">
+	<aaa></aaa>
+</div>
+<template id="aaa">
+	<h1>aaa组件->{{msg}}</h1>
+	<bbb :m="msg"></bbb>
+</template>
+<script>
+	var vm = new Vue({
+		el: '#box',
+		data: {
+
+		},
+		components: {
+			'aaa': {
+				data(){
+					return {
+						msg: '父组件数据'
+					}
+				},
+				template: '#aaa',
+				components: {
+					'bbb': {
+						props: ['m'],
+						template: '<h2>子组件拿到->{{m}}</h2>'
+					}
+				}
+			}
+		}
+	})
+</script>
 ```
