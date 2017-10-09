@@ -303,5 +303,93 @@ ReactDOM.render(
 	document.querySelector('#app')
 )
 ```
+#### 组件通信
+父级 -> 子级
+
+通过传参数的形式
+```
+class Child extends React.Component{
+	constructor(){
+		super();
+	}
+	render(){
+		return (<div>
+			我是子组件 {this.props.msg}
+		</div>)
+	}
+}
+class Parent extends React.Component{
+	constructor(){
+		super();
+		this.state = {
+			msg: 'from parent msg'
+		}
+	}
+	hanleClick(){
+		// gsm tnerap morf
+		this.setState({
+			msg: this.state.msg.split('').reverse().join('')
+		})
+	}
+	render(){
+		return (<div>
+			<h3 onClick={this.hanleClick.bind(this)}>我是父组件 {this.state.msg}</h3>
+			<Child msg={this.state.msg}/>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Parent />,
+	document.querySelector('#app')
+)
+```
+子级 -> 父级
+
+通过传递方法
+```
+class Child extends React.Component{
+	constructor(){
+		super();
+		this.state = {
+			'msg': 'from child msg'
+		}
+	}
+	handleClick(){
+		this.props.fnTrans(this.state.msg);
+	}
+	render(){
+		return (<div onClick={this.handleClick.bind(this)}>
+			我是子组件
+		</div>)
+	}
+}
+class Parent extends React.Component{
+	constructor(){
+		super();
+		this.state = {
+			msg: ''
+		}
+	}
+	getMsg(val){
+		alert("拿到子组件的" + val);
+		this.setState({
+			msg: val
+		})
+	}
+	render(){
+		return (<div>
+			<h3>我是父组件 -> {this.state.msg}</h3>
+			<Child fnTrans={this.getMsg.bind(this)} />
+		</div>)
+	}
+}
+ReactDOM.render(
+	<Parent />,
+	document.querySelector('#app')
+)
+```
+#### 基于webpack开发
+模块加载器
+
 
 
