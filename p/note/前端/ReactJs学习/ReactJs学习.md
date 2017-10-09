@@ -202,6 +202,106 @@ c) react提供语法，钩子使用ref
 	this.refs.t1;
 	<input type="text" ref="t1">
 ```
+#### 生命周期
+```
+componentWillMount				组件挂载前
+componentDidMount				组件挂载后
 
+componentWillUpdate				组件更新前，更改state时触发
+componentDidUpdate				组件更新后
+
+componentWillUnMount			组件卸载，ReactDOM.render新的组件
+```
+```
+<script type="text/babel">
+	class MyCom extends React.Component{
+		constructor(){
+			super();
+			this.state = {
+				msg: 'aaa'
+			};
+		}
+		render(){
+			return (<div>
+			<h3 ref="h3">welcome</h3>
+			</div>)
+		}
+		componentWillMount(){
+			console.log(this.state.msg); // 可以获取属性和方法
+			console.log(this.refs.h3);   // 元素还没挂载，获取不到
+		}
+		componentDidMount(){
+			console.log(this.refs.h3);   // 已经挂载，可以获取
+		}
+	}
+	ReactDOM.render(
+		<MyCom />,
+		document.querySelector('#app')
+	)
+
+</script>
+```
+阻止冒泡
+```
+在方法中拿到的ev由于是经过react包装过的，所以要拿到原生的才能阻止
+ev.nativeEvent.stopImmedidatePropagation();
+```
+#### 表单
+原生表单是受控的
+```
+return <input type="text" value="abc">   // 这样的话值是无法更改的
+要使用<input type="text" defaultValue="abc">
+
+<input type="checkbox" defaultChecked >   // 复选框默认打对勾
+```
+#### 交互
+react本身没有提供交互的。
+可以使用原生,jquery,zepto,fetch,axios......
+##### 循环输出数据
+```
+class MyCom extends React.Component{
+	constructor(){
+		super();
+		this.state = {
+			arr: ['apple','banana','orange']
+		}
+	}
+	render(){
+		let arrLi = [];
+		this.state.arr.forEach((val, index) => {
+			arrLi.push(<li key={index}>{val}</li>);    // key需要唯一
+		});
+		return (<div>
+			<ul>
+				{arrLi}
+			</ul>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<MyCom />,
+	document.querySelector('#app')
+);
+```
+#### 组件嵌套
+增强复用性
+```
+class Title extends React.Component{
+	render(){
+		return <h1 style={{background: this.props.bgColor}}>标题</h1>
+	}
+}
+class App extends React.Component{
+	render(){
+		return (<div>
+			<Title bgColor="red"/>
+		</div>)
+	}
+}
+ReactDOM.render(
+	<App />,
+	document.querySelector('#app')
+)
+```
 
 
