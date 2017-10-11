@@ -390,6 +390,22 @@ ReactDOM.render(
 ```
 #### 基于webpack开发
 模块加载器
+```
+cnpm install webpack -g             安装命令环境
+cnpm install webpack-dev-server -g  小型服务器
+```
+webpack组成部分
+```
+a) 入口，出口
+b) loaders (加载器)
+c) plugins (插件，自己插件，第三方插件)
+```
+配置文件webpack.config.js
+
+webpack命令
+```
+webpack -w监听
+```
 
 
 
