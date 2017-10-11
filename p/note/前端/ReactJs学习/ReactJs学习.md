@@ -404,7 +404,17 @@ c) plugins (插件，自己插件，第三方插件)
 
 webpack命令
 ```
-webpack -w监听
+webpack 打包一次
+webpack -w 监听文件变化打包
+webpack -p 压缩文件
+webpack -pw 持续监听并压缩
+```
+```
+在ES6语法中，如果要导出一个对象需要使用export default {a:'welcome',b:'china'}
+如果是散着导出的话使用export {a:12,b:13}
+在js文件里面使用
+import json,{a,b} from 'xxx'   
+console.log(json.a,json.b,a,b);   // 输出welcomechina1213
 ```
 
 
