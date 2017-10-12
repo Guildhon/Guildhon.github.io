@@ -416,6 +416,62 @@ webpack -pw 持续监听并压缩
 import json,{a,b} from 'xxx'   
 console.log(json.a,json.b,a,b);   // 输出welcomechina1213
 ```
+loaders
+```
+引入css文件
+style-loader,css-loader
+// index.js
+import 'xx.css';
+// webpack.config.js
+module.exports = {
+	entry: './index.js',
+	output: {
+		filename: 'bundle.js'
+	},
+	module: {
+		rules: [{
+			test: /\.css$/,
+			use: [
+				'style-loader',
+				'css-loader'
+			]
+		}]
+	}
+};
+
+jsx语法
+配置babel
+babel-core核心代码,babel-loader,babel-preset-es2015设置预设
+使用预设：
+a)参数
+rules: [{
+	test: /\.js$/,
+	use: [
+		{
+			loader: 'babel-loader',
+			options: {
+				presets: ['es-2015']
+			}
+		}
+		
+	]
+}]
+b).babelrc
+	{
+		"presets": ['es2015']
+	}
+```
+配置react
+```
+react,
+react-dom,
+babel-preset-react,
+babel-core,
+babel-loader,
+babel-preset-es2015,
+react-hot-loader
+```
+
 
 
 
