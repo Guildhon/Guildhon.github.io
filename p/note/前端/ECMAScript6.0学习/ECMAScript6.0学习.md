@@ -119,3 +119,70 @@ function show(a,b=15,c=12){
 }
 show(99);
 ```
+#### 解构赋值
+左右结构必须一样，声明和赋值不能分开（一句语句完成）,结构必须合法
+```
+let [a,b,c] = [1,2,3];
+console.log(a,b,c);  // 1 2 3
+```
+```
+let {a,b} = {a:1,b:2};
+```
+```
+let [json,arr] = [{a:1,b:2},[1,2]];
+```
+#### 数组
+map 映射 一个对一个
+```
+let arr = [12,5,8];
+let res = arr.map(function (item){
+	return item*2;
+})
+console.log(res)      // 24,10,16
+```
+reduce 汇总	一堆出来一个
+```
+let arr = [12,69,180,8763];
+// tmp中间结果，初始将12作为中间结果，index是循环下标
+let res = arr.reduce(function (tmp,item,index){
+	console.log(tmp+','+item+','+index);
+	return tmp + item;			// 成为下一个中间结果
+})
+// res: 9024
+
+12,69,1
+81,180,2
+261,8763,3
+```
+求平均数
+```
+let arr = [12,69,180,8763];
+let avg = arr.reduce((tmp,item,index) => {
+	if (index != arr.length - 1) {
+		return tmp + item;
+	} else {
+		return (tmp + item)/arr.length;
+	}
+})
+console.log(avg);   // 2256
+```
+filter	过滤器
+```
+let arr = [23,66,12,99];
+let res = arr.filter(function (item){
+	if (item % 3 == 0) {
+		return true;
+	} else {
+		return false;
+	}
+})
+console.log(res);  // [66, 12, 99]
+```
+forEach 循环（迭代）
+```
+let arr = [12,5,7];
+arr.forEach(item=>{
+	alert(item);
+})
+```
+
