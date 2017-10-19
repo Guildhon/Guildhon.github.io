@@ -46,8 +46,76 @@ alert(a+b);
 #### 3.新特性
 
 #### 变量
-```
 var 声明缺点 
+```
 1.可以重复声明
 2.无法限制修改
+3.没有块级作用域{}，只有函数作用域
+```
+let  不能重复声明 变量，可以修改，块级作用域
+ 
+const 不能重复声明 常量，声明时就要赋值，之后不能修改，块级作用域
+
+#### 函数
+箭头函数
+```
+匿名函数
+function (){
+
+}
+变成
+()=>{
+
+}
+
+function show(){}
+变成
+let show = ()=>{}
+```
+```
+1.如果只有一个参数，()可以省略
+	let show = a => {
+		return a*2;
+	}
+	show(12);  // 24
+2.如果{}里只有一个return，return、{}可以省略
+	let show = a => a*2;
+```
+#### 函数参数
+剩余参数，剩余参数放到args
+```
+function show(a,b,...args){
+	alert(args);       // 9,1  数组
+}
+show(12,17,9,1);
+```
+展开数组
+```
+let arr = [3,5,1];
+show(...arr);
+function show(a,b,c){
+	alert(a+","+b+","+c);   // 351
+}
+```
+```
+let arr1 = [1,2,3];
+let arr1 = [5,6,7];
+arr=[...arr1,...arr2]
+```
+```
+function show(...args){           // 收集
+	fn(...args);					// 展开
+}
+function fn(a,b){
+	alert(a+b);            // 29
+}
+
+show(12,17);
+```
+默认参数
+```
+function show(a,b=15,c=12){
+	console.log(a,b,c);				// 99 15 12
+}
+show(99);
 ```
