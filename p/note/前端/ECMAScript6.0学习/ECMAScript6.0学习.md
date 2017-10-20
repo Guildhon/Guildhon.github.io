@@ -185,4 +185,88 @@ arr.forEach(item=>{
 	alert(item);
 })
 ```
+#### 字符串
+startsWidth 判断字符串以什么开头
+```
+var str = "http://www.baidu.com";
+str.startsWidth('http://');
+```
+endsWidth 判断以什么结尾
 
+字符串模板
+```
+let str = `abc`;   // 用反单引号
+let a = `${str}d`    // abcd
+```
+#### 面向对象
+class关键字，构造器和类分开了，class里面加方法
+
+ES5的对象和继承
+```
+function User(name,pass){
+	this.name = name;
+	this.pass = pass;
+}
+User.prototype.showName = function(){
+	alert(this.name);
+}
+User.prototype.showPass = function(){
+	alert(this.pass);
+}
+function VipUser(name,pass,level){
+	User.call(this,name,pass);
+	this.level = level;
+}
+VipUser.prototype = new User();
+VipUser.prototype.constructor = VipUser;
+
+VipUser.prototype.showLevel = function(){
+	alert(this.level);
+}
+var v1 = new VipUser('guildhon','123','1');
+v1.showName();
+v1.showPass();
+v1.showLevel();
+```
+ES6的面向对象和继承
+```
+class User{
+	constructor(name,pass){
+		this.name = name;
+		this.pass = pass;
+	}
+	showName(){
+		alert(this.name);
+	}
+	showPass(){
+		alert()
+	}
+}
+class VipUser extends User{
+	constructor(name,pass,level){
+		super(name,pass);					// 执行父类构造函数
+		this.level = level;
+	}
+	showLevel(){
+		alert(this.level);
+	}
+}
+```
+#### json对象
+标准写法
+
+1.只能用双引号
+
+2.所有的key必须用引号包起来
+
+json简写
+```
+key,value一样时候的简写 {a,b}
+
+let json = {
+	a: 12,
+	show(){			// 省略:function
+		alert(1);
+	}
+}
+```
