@@ -419,3 +419,14 @@ console.log(res1);   // {value: 12, done: false}
 let res2 = genBoj.next();
 console.log(res2);  // {value: undefined, done: true}
 ```
+#### ES7 & ES8
+##### 数组
+includes判断数组是否存在某个值
+```
+let arr = [1,3,4];
+alert(arr.includes(1));
+```
+循环 for in （循环key）和for of (循环value，不能用于json)
+
+padStart(10,'0')从开始取位,不够左边补0 。
+padEnd类似
