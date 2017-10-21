@@ -270,3 +270,152 @@ let json = {
 	}
 }
 ```
+#### Promise
+用同步方式书写异步代码
+```
+let p = new Promise(function (resolve,reject) {
+	// resolve 代表成功
+	// reject 代表失败
+	$.ajax({
+		url: 'arr.txt',
+		dataType: 'json',   // 接收json
+		success(arr){
+			resolve(arr);
+		},
+		error(err){
+			reject(err);
+		}
+	})
+});
+p.then(function(arr){
+	alert('成功'+arr);  // resolve
+},function(err){
+	alert('成功'+err);  // reject 代表失败
+});
+```
+Promise.all 谁跑的慢，以谁为准执行回调，接收一个数组，获取请求到的数据
+
+在不同的接口请求数据然后拼合成自己所需的数据，通常这些接口之间没有关联（例如不需要前一个接口的数据作为后一个接口的参数）
+```
+let p1 = new Promise(function (resolve,reject) {
+	// resolve 代表成功
+	// reject 代表失败
+	$.ajax({
+		url: 'arr.txt',
+		dataType: 'json',   // 接收json
+		success(arr){
+			resolve(arr);
+		},
+		error(err){
+			reject(err);
+		}
+	})
+});
+let p2 = new Promise(function (resolve,reject) {
+	// resolve 代表成功
+	// reject 代表失败
+	$.ajax({
+		url: 'arr2.txt',
+		dataType: 'json',   // 接收json
+		success(arr){
+			resolve(arr);
+		},
+		error(err){
+			reject(err);
+		}
+	})
+});
+
+Promise.all([
+	p1,p2
+]).then(function (arr){
+	let [res1,res2] = arr;
+	alert('全都成功了');
+},function(err){
+	alert('至少一个失败了')
+});
+```
+```
+function createPromise(url) {
+	return new Promise(function (resolve,reject) {
+			// resolve 代表成功
+			// reject 代表失败
+			$.ajax({
+				url,
+				dataType: 'json',   // 接收json
+				success(arr){
+					resolve(arr);
+				},
+				error(err){
+					reject(err);
+				}
+			})
+		});
+}
+Promise.all([
+	createPromise('arr.txt'),createPromise('arr2.txt')
+]).then(function (arr){
+	let [res1,res2] = arr;
+	alert('全都成功了');
+},function(err){
+	alert('至少一个失败了')
+});
+```
+Promise.race 谁跑的快，以谁为准执行回调
+
+#### generator
+可以用来消除异步操作
+```
+function* show(){
+	alert('a');
+
+	yield;   // 中断执行
+
+	alert('b');
+}
+let genBoj = show();
+genBoj.next();    // 弹a
+genBoj.next();    // 弹b
+```
+yield
+```
+function* show(){
+	alert('a');
+
+	let a = yield;   // 中断
+
+	alert('b');
+	alert(a);		// 5
+}
+let genBoj = show();
+genBoj.next(12);		// 没法给yield传参
+genBoj.next(5);
+```
+```
+function* show(){
+	alert('a');
+
+	let a = yield;   // 传参
+
+	alert('b');
+	alert(a);		// 5
+}
+let genBoj = show();
+genBoj.next(12);		// 没法给yield传参
+genBoj.next(5);
+```
+```
+function* show(num){
+	alert('a');
+
+	yield 12;   // 返回值
+
+	alert('b');
+}
+let genBoj = show();
+let res1 = genBoj.next();
+console.log(res1);   // {value: 12, done: false}
+
+let res2 = genBoj.next();
+console.log(res2);  // {value: undefined, done: true}
+```
