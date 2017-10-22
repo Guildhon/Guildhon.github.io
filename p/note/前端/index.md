@@ -10,4 +10,5 @@ My Note
 - [gulp使用技巧](gulp使用技巧/gulp使用技巧.md)
 - [VueJs学习](VueJs学习/VueJs学习.md)
 - [ReactJs学习](ReactJs学习/ReactJs学习.md)
+- [AngularJs学习](AngularJs学习/AngularJs学习.md)
 - [ECMAScript6.0学习](ECMAScript6.0学习/ECMAScript6.0学习.md)
