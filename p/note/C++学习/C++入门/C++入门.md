@@ -54,3 +54,36 @@ int main(void)
 	return 0;
 }
 ```
+指针和引用
+```
+#include<iostream>
+using namespace std;
+void fun(int *a,int *b){
+	int c = 0;
+	c = *a;
+	*a = *b;
+	*b = c;
+}
+int main(){
+	int x = 10, y = 20;
+	fun(&x,&y);
+	printf("%d %d",x,y);
+	return 0;
+}
+```
+```
+#include<iostream>
+using namespace std;
+void fun(int &a,int &b){
+	int c = 0;
+	c = a;
+	a = b;
+	b = c;
+}
+int main(){
+	int x = 10, y = 20;
+	fun(x,y);
+	printf("%d %d",x,y);
+	return 0;
+}
+```
