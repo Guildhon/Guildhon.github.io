@@ -43,3 +43,20 @@ MVVM  一部分简单逻辑放到HTML里面
   取消臃肿
   直接、粗暴
 ```
+小案例，双向数据绑定，数据与视图自动同步
+```
+<div ng-app="">
+	<input type="text" ng-model="a">
+	<div ng-bind="a"></div>
+</div>
+```
+#### 指令
+ng-app 划出angular作用范围
+
+ng-init 初始化数据
+
+ng-model 绑定了 HTML 表单元素到 scope 变量中，如果 scope 中不存在变量, 将会创建它。双向绑定
+
+ng-bind 单纯输出，数据->视图
+
+ng-repeat 循环
