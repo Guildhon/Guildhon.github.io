@@ -207,7 +207,7 @@ function User(name,pass){
 	this.name = name;
 	this.pass = pass;
 }
-User.prototype.showName = function(){
+User.prototype.showName = function(){   // 挂载到原型链的会共享同一份
 	alert(this.name);
 }
 User.prototype.showPass = function(){
