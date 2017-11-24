@@ -52,5 +52,8 @@
 
 [IntelliJ IDEA注册码](http://idea.lanyus.com/)
 
+##### 开发遇到的问题
+[wampserver安装过程中图标黄色](http://blog.csdn.net/qq_32429977/article/details/50452529)
+
 
 
