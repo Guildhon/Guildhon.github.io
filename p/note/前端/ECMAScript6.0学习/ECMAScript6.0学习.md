@@ -81,6 +81,19 @@ let show = ()=>{}
 2.如果{}里只有一个return，return、{}可以省略
 	let show = a => a*2;
 ```
+会绑定当前作用域
+```
+function fn(){
+	var a = [1];
+	a.map(function(){
+		console.log(this);   // window
+	});
+	a.map(()=>{
+		console.log(this);   // {a:1}
+	})
+}
+fn.call({a:1});
+```
 #### 函数参数
 剩余参数，剩余参数放到args
 ```
@@ -252,6 +265,11 @@ class VipUser extends User{
 	}
 }
 ```
+两种本质是一样的，class是语法糖
+
+typeof User // "function"
+
+User === User.prototype.constructor // true
 #### json对象
 标准写法
 
@@ -428,5 +446,97 @@ alert(arr.includes(1));
 ```
 循环 for in （循环key）和for of (循环value，不能用于json)
 
-padStart(10,'0')从开始取位,不够左边补0 。
+padStart(10,'0')从开始取位,不够左边补0。
 padEnd类似
+
+
+#### 环境搭建
+有些新的语法浏览器还不支持，所以需要进行编译转换，使用babel
+```
+手动编译
+1.搭建node环境,npm init
+2.安装babel依赖，babel-core，babel-preset-es2015,babel-preset-latest
+3.创建.bebelrc文件
+// .bebelrc
+{
+	"presets": ["es2015","latest"],
+	"plugins": []
+}
+4.全局安装babel-cli 
+
+使用webpack
+1.安装babel依赖，babel-core，babel-preset-es2015,babel-preset-latest
+2.安装webpack,babel-loader
+// package.json
+"devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
+    "webpack": "^3.10.0"
+}
+// .babelrc
+{
+    "presets": ["es2015", "latest"],
+    "plugins": []
+}
+3.配置webpack.config.js
+module.exports = {
+    entry: './src/index.js',   // 入口文件
+    output: {
+        path: __dirname,
+        filename: './build/bundle.js'   // 打包文件
+    },
+    module: {
+        rules: [{
+            test: /\.js?$/,
+            exclude: /(node_modules)/,
+            loader: 'babel-loader'
+        }]
+    }
+}
+4.配置package.json里的script,npm run start执行webpack命令
+
+使用rollup  模块化
+1.安装依赖
+"devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "rollup": "^0.52.3",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-node-resolve": "^3.0.0"
+}
+2.创建.babelrc
+{
+    "presets": [
+        ["latest", {
+            "es2015": {
+                "modules": false   //  只编译自己写的代码
+            }
+        }]
+    ],
+    "plugins": ["external-helpers", "babel-plugin-transform-regenerator"]
+}
+3.创建rollup.config.js
+import babel from 'rollup-plugin-babel'
+import resolve from 'rollup-plugin-node-resolve'
+
+export default {
+    entry: 'src/index.js',
+    format: 'umd',   // 兼容性的规范
+    plugins: [
+        resolve(),
+        babel({
+            exclude: 'node_modules/**'
+        })
+    ],
+    dest: 'build/bundle.js'
+}
+4.配置package.json里的script，配置npm run start为rollup -c rollup.config.js
+```

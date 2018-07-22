@@ -13,3 +13,5 @@ My Note
 - [ReactJs学习](ReactJs学习/ReactJs学习.md)
 - [AngularJs学习](AngularJs学习/AngularJs学习.md)
 - [ECMAScript6.0学习](ECMAScript6.0学习/ECMAScript6.0学习.md)
+- [Zepto和jQuery](Zepto和jQuery/Zepto和jQuery.md)
+
