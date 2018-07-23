@@ -14,4 +14,8 @@ My Note
 - [AngularJs学习](AngularJs学习/AngularJs学习.md)
 - [ECMAScript6.0学习](ECMAScript6.0学习/ECMAScript6.0学习.md)
 - [Zepto和jQuery](Zepto和jQuery/Zepto和jQuery.md)
+- [单线程与异步](单线程与异步/单线程与异步.md)
+- [虚拟DOM学习](虚拟DOM学习/虚拟DOM学习.md)
+
+
 

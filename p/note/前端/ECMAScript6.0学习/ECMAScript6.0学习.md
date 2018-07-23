@@ -311,6 +311,33 @@ p.then(function(arr){
 	alert('成功'+err);  // reject 代表失败
 });
 ```
+
+```
+function loadImg(src) {
+	const promise = new Promise(function(resolve,reject){
+		var img = document.createElement("img");
+		img.onload = function (){
+			resolve(img);
+		}
+		img.onerror = function (){
+			reject();
+		}
+		img.src = src;
+	})
+	return promise;
+}
+var src = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo_top_ca79a146.png";
+var result = loadImg(src);
+result.then(function(img){
+	alert("width"+img.width);
+},function (){
+	alert("error");
+})
+result.then(function(img){
+	alert("height"+img.height);
+})
+```
+
 Promise.all 谁跑的慢，以谁为准执行回调，接收一个数组，获取请求到的数据
 
 在不同的接口请求数据然后拼合成自己所需的数据，通常这些接口之间没有关联（例如不需要前一个接口的数据作为后一个接口的参数）
