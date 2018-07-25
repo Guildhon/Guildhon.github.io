@@ -2,8 +2,24 @@ My Note
 --------
 > VueJs学习
 
+
 [官网](https://cn.vuejs.org/)
 [手册](https://cn.vuejs.org/v2/api/)
+
+<img src="./img/mvvm.png" alt="">
+Model 模型、数据
+
+View 视图、模板（视图和模型是分离的）
+
+ViewModel 连接Model和View
+
+#### MVVM三要素
+
+响应式：vue如何监听到data的每个属性变化？
+
+模板引擎：vue的模板如何被解析，指令如何处理？
+
+渲染：vue的模板如何被渲染成html?以及渲染过程?
 
 #### 一个小雏形
 ```

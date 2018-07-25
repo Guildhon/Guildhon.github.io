@@ -100,3 +100,86 @@ $.fn.getNodeName = function (){
 }
 ```
 好处：1.只有$会暴露在window全局变量；2.将插件扩展统一到$.fn.xxx这一接口，方便使用
+
+#### 使用jQuery实现todo-list
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>todo</title>
+</head>
+<body>
+	<div>
+		<input type="text" name="" id="text-title">
+		<button id="btn-submit">submit</button>
+	</div>
+	<div>
+		<ul id="ul-list"></ul>
+	</div>
+	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		var $textTitle = $("#text-title");
+		var $btnSubmit = $("#btn-submit");
+		var $ulList = $("#ul-list");
+		$btnSubmit.click(function () {
+			var title = $textTitle.val();
+			if (!title) {
+				return;
+			}
+			var $li = $("<li>" + title + "</li>");   // 数据和视图混合
+			$ulList.append($li);
+			$textTitle.val('');
+		})
+	</script>
+</body>
+</html>
+```
+
+#### 使用Vue实现todo-list
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>todo</title>
+</head>
+<body>
+	<div id="app">
+		 <div>
+	        <input type="text" v-model="textTitle">
+	        <button id="btn-submit" @click="addList">submit</button>
+	    </div>
+	    <div>
+	        <ul id="ul-list">
+	        	<li v-for="item in list">{{item}}</li>
+	        </ul>
+	    </div>
+	</div>
+	<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+	<script>
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				textTitle: '',
+				list: []
+			},
+			methods: {
+				addList: function () {
+					if (!this.textTitle) {
+						return;
+					}
+					this.list.push(this.textTitle);
+					this.textTitle = "";
+				}
+			}
+		})
+	</script>
+</body>
+</html>
+```
+vue和jQuery区别
+
+数据和视图的分离，解耦（开放封闭原则）
+
+以数据驱动视图，只关心数据变化，DOM操作被封装
