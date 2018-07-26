@@ -538,3 +538,324 @@ components: {
 	})
 </script>
 ```
+
+#### vue中如何实现响应式
+
+什么是响应式？
+
+修改data属性之后，vue立即监听到
+
+data属性被代理到vm(this)上
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="app">
+		<p>{{name}}</p>
+		<p>{{age}}</p>
+	</div>
+	<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+	<script>
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				name: '张三',
+				age: 20
+			},
+			methods: {
+			}
+		})
+		vm.name = "李四";
+	</script>
+</body>
+</html>
+```
+Object.defineProperty
+```
+var _name = "张三";  // _认为是内部变量
+var obj = {};
+Object.defineProperty(obj, "name", {
+	get: function () {
+		console.log('get');
+		return _name;
+	},
+	set: function (newValue){
+		console.log('set');
+		_name = newValue
+	}
+})
+```		
+模拟实现
+```
+var mv = {};
+var data = {
+	price: 100,
+	name: 'zhangsan'
+}
+var key,value;
+for (key in data) {
+	// 命中闭包。新建一个函数，保证key的独立的作用域
+	(function (key){
+		Object.defineProperty(mv, key, {
+			get: function (){
+				console.log('get');
+				return data[key];
+			},
+			set: function (newVal){
+				console.log('set');
+				data[key] = newVal;
+			}
+		})
+	})(key);
+}
+```
+
+#### vue中如何解析模板
+本质：字符串
+
+有逻辑，如v-if,v-for等
+
+与html格式很像，但有很大区别
+
+最终要转换为html来显示
+
+模板最终必须转换成JS代码，因为：有逻辑（v-if,v-for），必须用JS才能实现（图灵完备）；转换为html渲染页面，必须用JS才能实现。因此，模板最重要转换成一个JS函数（render函数）
+
+##### render函数
+with用法
+```
+var obj = {
+	name: 'zhangsan',
+	age: 20,
+	getAddress: function (){
+		alert('beijing');
+	}
+}
+// 不用with
+function fn(){
+	alert(obj.name);
+	alert(obj.age);
+	obj.getAddress();
+}
+fn();
+
+// 使用width
+function fn1(){
+	with(obj) {
+		alert(name);     // 可读性不好
+		alert(age);
+		getAddress();
+	}
+}
+fn1();
+```
+
+模板中所有信息都包含在render函数中
+
+this即vm
+
+price即this.price即vm.price,即data中的price
+
+_c即this._c即vm._c
+
+```
+<div id="app">
+	<p>{{price}}</p>
+</div>
+
+// 对应js
+with(this){
+	return _c(
+		'div',
+		{
+			attrs: {
+				"id": "app"
+			},
+		},
+		[
+			_c('p',[_v(_s(price))]) // _s转化为字符串，类似toString，_v是创建文本节点
+		]	
+	)
+}
+```
+要进行以上的转换
+
+到了vue2.0开始支持预编译
+
+开发环境：写模板
+
+编译打包：
+
+生产环境：js
+
+在vue1.x时，打包的依旧是html模板，需要考虑模板到render的过程
+
+到2.x时，支持预编译，将其转化为js，更重要的是考虑render到模板的过程
+
+React组件化也是一样道理，将JSX模板 编译->JS代码，JSX语法变成标准，工具化的原理不需要知道
+
+```
+// vue-todo应用
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>todo</title>
+</head>
+<body>
+	<div id="app">
+		 <div>
+	        <input type="text" v-model="textTitle">
+	        <button id="btn-submit" @click="addList">submit</button>
+	    </div>
+	    <div>
+	        <ul id="ul-list">
+	        	<li v-for="item in list">{{item}}</li>
+	        </ul>
+	    </div>
+	</div>
+	<script src="vue.js"></script>
+	<script>
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				textTitle: '',
+				list: []
+			},
+			methods: {
+				addList: function () {
+					if (!this.textTitle) {
+						return;
+					}
+					this.list.push(this.textTitle);
+					this.textTitle = "";
+				}
+			}
+		})
+	</script>
+</body>
+</html>
+```
+render函数
+
+这里_c其实就相当于snabbdom的h函数
+
+render函数执行之后，返回的是vnode
+```
+with(this){
+	return _c(
+		'div',
+	    {
+	    	attrs:{"id":"app"}
+	    },
+	    [
+	    	_c(
+	    		'div',
+	    		[
+	    			_c(
+	    				'input',
+	    				{
+	    					directives:[
+	    						{
+	    							name:"model",
+	    							rawName:"v-model",
+	    							value:(textTitle),       // 对应vm.textTitle
+	    							expression:"textTitle"
+	    						}
+	    					],
+	    					attrs:{"type":"text"},
+	    					domProps:{
+	    						"value":(textTitle)
+	    					},
+	    					on:{
+	    						"input":function($event){      // 双向数据绑定，触发事件 v->m
+	    								if($event.target.composing)return;
+	    								textTitle=$event.target.value
+	    						}
+	    					}
+	    				}
+	    			),
+	    			_v(" "),
+	    			_c(
+	    				'button',
+	    				{
+	    					attrs:{
+	    						"id":"btn-submit"
+	    					},
+	    					on:{
+	    						"click":addList
+	    					}
+	    				},
+	    				[
+	    					_v("submit")
+	    				]
+	    			)
+	    		]
+	    	),
+	    	_v(" "),
+	    	_c(
+	    		'div',
+	    		[
+	    			_c(
+	    				'ul',
+	    				{
+	    					attrs:{"id":"ul-list"}
+	    				},
+	    				_l(
+	    					(list),
+	    					function(item){
+	    						return _c(
+	    								'li',
+	    								[_v(_s(item))]
+	    						)
+	    					}
+	    				)
+	    			)
+	    		]
+	    	)
+	    ]
+	)
+}
+```
+updateComponent中实现了vdom的patch
+
+页面首先渲染执行了updateComponent
+
+data每次修改属性，执行updateComponent
+
+```
+vm._update(vnode){
+	const prevVnode = vm._vnode;
+	vm._vnode = vnode;
+	if (!prevVnode) {
+		vm.$el = vm.__patch__(vm.$el,vnode);
+	} else {
+		vm.$el = vm.__patch__(prevVnode,vnode);
+	}
+}
+function updateComponent(){
+	// vm._render即上面的render函数，返回vnode
+	vm._update(vm.render());
+}
+```
+vue的整个实现流程
+
+1.解析模板成render函数 （with用法，模板中所有信息都被render函数包含，模板中用到的data属性，都变成了JS变量，模板中的v-model,v-for,v-on都变成了JS逻辑，render函数返回vnode）
+
+2.响应式开始监听 （Object.defineProperty，将data的属性代理到vm上）
+
+3.首次渲染，显示页面，且绑定依赖 （初次渲染，执行updateComponent，执行vm.render()，执行render函数，会访问到vm.list和vm.title，会被响应式的get方法监听到，执行updateComponent,会走到vdom的patch方法）
+
+4.data属性变化，触发rerender
+
+
+
+
+
+
+
