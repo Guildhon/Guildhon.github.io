@@ -472,6 +472,157 @@ babel-preset-es2015,
 react-hot-loader
 ```
 
+#### 脚手架安装
+```
+cnpm install -g create-react-app
+create-react-app react-test
+cd react-test
+npm run start
+```
 
+#### 组件化
+组件的封装
 
+视图 数据 变化逻辑（数据驱动视图变化）
 
+组件的复用
+
+props传递，复用
+
+#### JSX
+##### JSX语法
+
+注释 
+```
+{/* <Todo/> */}  {之间放的是JS变量}
+```
+html形式
+```
+(<div>
+	<div></div>
+</div>)
+```
+引入JS变量和表达式
+```
+{name ? '1' : 0} 
+{(name === 'zhangsan').toString()}
+&& || 
+```
+
+if...else...
+```
+三目运算 ? : 
+```
+
+循环
+```
+render(){
+	const list = [1,2,3]
+	return (<div>
+		<ul>
+			{list.map((item,index)=>{
+				return <li key={index}>{item}</li>
+			})}
+		</ul>
+	</div>)
+}
+```
+
+style和className 
+```
+render(){
+	const styleConfig = {
+		fontSize: '40px'
+		color: 'blue'
+	}
+	return (<div className="container">
+		<p style={styleConfig}>aaa</p>   // style={{fontSize: '40px',color: 'blue'}}
+	</div>)
+}
+```
+
+事件
+
+JSX语法根本无法被浏览器所解析
+
+##### JSX解析
+```
+/* JSX代码 */
+var profile = <div>
+	<img src="avatar.png" className="profile" />
+	<h3>{[user.firstName,user.lastName].join(' ')}</h3>
+</div>;
+
+// 解析结果
+var profile = React.createElement("div",null,
+	React.createElement("img",{src: 'avatar.png',className: "profile"}),
+	React.createElement("h3",null,[user.firstName,user.lastName].join(' '))
+);
+
+/* JSX代码 */
+render(){
+	const list = this.props.data
+	return (
+		<ul>
+			{
+				list.map((item,index) => {
+					return <li key={index}>{item}</li>
+				})
+			}
+		</ul>
+	)
+}
+
+// 解析结果
+function render(){
+	const list = this.props.data
+	return React.createElement(
+		"ul",
+		null,
+		list.map((item,index) => {
+			return React.createElement(
+				"li",
+				{key: index},
+				item
+		});
+	);
+}
+```
+
+JSX其实是语法糖
+
+开发环境会将JSX编译成JS代码
+
+JSX的写法大大降低了学习成本和编码工作量，同时，JSX也会增加debug成本
+
+##### JSX独立的标准
+
+JSX是React引入的，但不是React独有的
+
+React已经将它作为一个独立标准开放，其他项目也可用
+
+React.createElement是可以自定义修改名字的
+
+本身功能已经完备；和其他标准兼容和扩展性没问题
+
+```
+使用babel 编译
+cnpm install babel -g
+安装插件babel-plugin-transform-react-jsx
+创建.babelrc
+{"plugins": [transform-react-jsx]}
+babel --plugins transform-react-jsx demo.jsx
+
+在demo.jsx头部添加/* @jsx h */，可将React.createElement修改名字为h函数
+```
+
+##### JSX和vnode
+为何需要vnode
+
+vnode是React初次推广开的，结合JSX
+
+JSX就是模板，最终要渲染成html
+
+初次渲染+修改state后的re-render
+
+正好符合vnode的应用场景

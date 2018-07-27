@@ -849,9 +849,9 @@ vue的整个实现流程
 
 2.响应式开始监听 （Object.defineProperty，将data的属性代理到vm上）
 
-3.首次渲染，显示页面，且绑定依赖 （初次渲染，执行updateComponent，执行vm.render()，执行render函数，会访问到vm.list和vm.title，会被响应式的get方法监听到，执行updateComponent,会走到vdom的patch方法）
+3.首次渲染，显示页面，且绑定依赖 （初次渲染，执行updateComponent，执行vm.render()，执行render函数，会访问到vm.list和vm.title，会被响应式的get方法监听到，执行updateComponent,会走到vdom的patch方法，patch将vnode渲染成DOM，初次渲染完成）（绑定依赖监听get，不直接监听set，data有很多属性，有些被用到，有些可能不被用到，被用到的会走get，不被用到的不会走get，未走get中的属性，set的时候我们也无需关心，避免不必要的重复渲染，比如data里有个aaa:12，但是模板没有使用到，即不走get监听，以后对它进行修改，走set监听，不管它）
 
-4.data属性变化，触发rerender
+4.data属性变化，触发rerender （修改属性，被响应式的set监听到，set中执行updateComponent，updateComponent重新执行vm._render()，生成的vnode和prevVnode，通过patch进行对比，渲染到html中）
 
 
 
