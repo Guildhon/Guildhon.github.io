@@ -16,6 +16,7 @@ My Note
 - [Zepto和jQuery](Zepto和jQuery/Zepto和jQuery.md)
 - [单线程与异步](单线程与异步/单线程与异步.md)
 - [虚拟DOM学习](虚拟DOM学习/虚拟DOM学习.md)
+- [Hybrid](Hybrid/Hybrid.md)
 - [JS一些需要注意的地方](JS一些需要注意的地方/JS一些需要注意的地方.md)
 
 
