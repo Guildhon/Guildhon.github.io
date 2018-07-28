@@ -617,7 +617,7 @@ babel --plugins transform-react-jsx demo.jsx
 ```
 
 ##### JSX和vnode
-为何需要vnode
+为何需要vnode？（JSX需要渲染成html，数据驱动视图）
 
 vnode是React初次推广开的，结合JSX
 
@@ -626,3 +626,163 @@ JSX就是模板，最终要渲染成html
 初次渲染+修改state后的re-render
 
 正好符合vnode的应用场景
+
+何时patch?
+
+初次渲染 - ReactDom.render(<App/>,container)
+
+会触发patch(container,vnode)
+
+re-render - setState
+
+会触发patch(vnode,newVnode)
+
+自定义组件的解析 （初始化实例，然后执行render）
+```
+// jsx
+return (<div>
+	<Input addTitle={this.addTitle.bind(this)}/>
+	<List data={this.state.list}/>
+</div>)
+
+// js
+return React.createElement('div',null,
+	React.createElement(Input,{addTitle:this.addTitle.bind(this)}),
+	React.createElement(List,{data: this.state.list})
+)
+/*
+	var list = new List({data: this.state.list})
+	return list.render();
+ */
+```
+
+'div' - 直接渲染<div>即可，vdom可以做到
+
+Input和List，是自定义组件(class)，vdom默认不认识
+
+因此Input和List定义的时候必须声明render函数
+
+根据props初始化实例，然后执行实例的render函数
+
+render函数返回的还是vnode对象
+
+##### setState
+
+setState的异步
+
+```
+addTitle(title) {
+	const currentList = this.state.list
+	console.log(this.state.title)     // ['a','b']
+	this.setState({
+		list: currentList.concat(title)       // 'c'
+	})
+	console.log(this.state.title)     // ['a','b']
+}
+```
+
+可能会一次执行多个setState
+
+你无法规定、限制用户如何使用setState
+
+没必要每次setState都重新渲染，考虑性能
+
+即使是每次重新渲染，用户也看不到中间件的效果（因为JS执行和DOM操作都是单线程，JS执行时DOM是卡顿的）
+
+只看到最后的效果即可
+```
+addTitle(title) {
+	const currentList = this.state.list
+	// 初次想增加title
+	this.setState({
+		list: currentList.concat(title)       
+	})
+	// 改变主意，想增加title+1
+	this.setState({
+		list: currentList.concat(title+1)       
+	})
+	// 改变主意，想增加title+2
+	this.setState({
+		list: currentList.concat(title+2)  // 覆盖，只执行最后一个渲染     
+	})
+}
+```
+
+vue修改属性也是异步
+
+效果、原因和setState一样 
+
+发生在第四步
+
+修改属性，被响应式的set监听到
+
+set中执行updateComponent，updateComponent是异步的
+
+updateComponent重新执行vm._render()
+
+生成的vnode和prevVnode，通过patch进行对比
+
+渲染到html
+```
+this.title = "123";  // 监听
+this.title = "234";  // 监听
+```
+
+setState的过程
+
+每个组件实例，都有renderComponent方法（在继承的Component类中）
+
+执行renderComponent会重新执行实例的render（按照最新的数据，生成最新的vnode）
+
+render函数返回newVnode，然后拿到preVnode
+
+执行patch(preVnode,newVnode)
+```
+// 模拟
+class Component {
+	constructor(props){}
+	renderComponent(){
+		const prevVnode = this._vnode
+		const newVnode = this.render()
+		patch(prevVnode,newVnode)
+		this._vnode = newVnode	
+	}
+}
+
+addTitle(title) {
+	const currentList = this.state.list
+	this.setState({
+		list: currentList.concat(title)       
+	}, () => {
+		this.renderComponent()
+	})
+}
+```
+
+#### Vue vs React
+
+##### 两者的本质区别
+
+Vue:本质是MVVM框架，由MVC发展而来
+
+React:本质是前端组件框架，由后端组件化发展而来
+
+##### 看模板和组件化的区别
+
+vue:使用模板（最初由angular提出）
+
+React:使用JSX，模板和JS混在一起，未分离
+
+模块语法（倾向JSX，有标准），模板分离上（倾向于vue）
+
+React本身就是组件化，没有组件化就不是React，组件化更倾向React
+
+vue也支持组件化，不过是在MVVM上的扩展
+##### 两者共同点
+都支持组件化
+
+都是数据驱动视图
+
+国内使用，首推vue，文档易读，易学，社区够大
+
+团队水平够高，推荐使用React，组件化和JSX
