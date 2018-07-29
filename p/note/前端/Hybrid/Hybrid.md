@@ -112,6 +112,8 @@ JS访问客户端能力，传递参数和回调函数
 
 客户端通过回调函数返回内容
 
+通讯的基本形式：调用能力，传递参数，监听回调
+
 ##### schema协议
 
 页面内跳转协议
@@ -139,5 +141,67 @@ window['_weixin_scan_callback'] = function (result){
 iframe.src = 'weixin://dl/scan?k1=v1&k2=v2&k3=v3&callback=_weixin_scan_callback'
 // 省略
 ```
+schema使用的封装
+```
+/* 傻瓜式调用，而且不用再自己定义全局函数 */
+window.invoke.share({title: 'xxx',content: 'xxx'}, function (result){
+	if (result.error == 0) {
+		alert('分享成功')
+	} else {
+		// 分享失败
+		alert(result.message)
+	}
+})
 
+// 分享
+function invokeShare(data,callback) {
+	_invoke('share',date,callback)
+}
+// 登录
+function invokeLogin(data,callback) {
+	_invoke('login',data,callback)
+}
+// 打开扫一扫
+function invokeScan(data,callback) {
+	_invoke('scan',data,callback)
+}
+// 暴露给全局
+window.invoke = {
+	share: invokeShare,
+	login: invokeLogin,
+	scan: invokeScan
+}
+
+function _invoke(action,data,callback) {
+	// 拼接schema协议
+	var schema = 'myapp//utils'
+	schema += '/' + action
+	schema += '?a=a'        // 加个无意义参数，不用后面判断是否删掉&
+	var key
+	for (key in data) {
+		if (data.hasOwnProperty(key)) {
+			schema += '&' + key + '=' + data[key]
+		}
+	}
+	// 处理callback
+	if (typeof callback === 'string') {
+		callbackName = callback
+	} else {
+		callbackName = action + Date.now()
+		window[callbackName] = callback
+	}
+	schema += '&callback' + callbackName
+
+	// 从iframe中调用schema
+}
+
+```
 ##### 内置上线
+
+将以上封装的代码打包，叫做invoke.js，内置到客户端
+
+客户端每次启动webview，都默认执行invoke.js
+
+本地加载，免去网络加载的时间，更快
+
+本地加载，没有网络请求，黑客看不到schema协议，更安全
