@@ -13,3 +13,6 @@ if (true) {
 }
 console.log(test);             // ƒ test(){alert(1)}
 ```
+
+事件委托
+<a href="https://www.cnblogs.com/liugang-vip/p/5616484.html">事件委托</a>
