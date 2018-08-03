@@ -16,3 +16,47 @@ console.log(test);             // ƒ test(){alert(1)}
 
 事件委托
 <a href="https://www.cnblogs.com/liugang-vip/p/5616484.html">事件委托</a>
+
+数组去重
+```
+var arr = [1,2,3,4,2,1];
+
+// 利用Set
+
+[...new Set(arr)]  // 将Set结构转换成数组
+
+Array.from(new Set(arr))
+
+
+// 利用IndexOf
+var newArr = [];
+for (var i = 0; i < arr.length; i++) {
+	if (i === arr.indexOf(arr[i])){
+		newArr.push(arr[i])
+	}
+}
+
+arr.filter(function(v,i,a){return a.indexOf(v) === i})
+
+// 先排序再去重
+arr.sort()
+var newArr = [];
+for (var i = 0; i < arr.length; i++){
+	if (arr[i] !== arr[i+1] || i+1 === arr.length) {
+		newArr.push(arr[i])
+	}
+}
+
+// 利用对象属性去重        如果有'1'和1会有问题
+var newArr = [];
+var json = {};
+for (var i = 0; i < arr.length; i++) {
+	if (!json[arr[i]]) {
+		newArr.push(arr[i]);
+		json[arr[i]] = 1;
+	}
+}
+
+
+// 使用includes判断一个数组是否包含一个指定的值
+```

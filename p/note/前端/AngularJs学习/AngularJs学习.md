@@ -4,6 +4,11 @@ My Note
 
 [AngularJS版本](https://code.angularjs.org/) 可以通过npm包管理工具，或者bower获取
 
+脏值检查
+
+其原理是不会去监听数据的变化，而是觉得可能要发生数据变化的时候（用户交互，DOM操作等），就去检查所有数据，看看有没有变化
+
+
 AngularJS是MVVM框架
 ```
 MVC模式
