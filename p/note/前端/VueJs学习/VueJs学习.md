@@ -6,6 +6,8 @@ My Note
 [官网](https://cn.vuejs.org/)
 [手册](https://cn.vuejs.org/v2/api/)
 
+[生命周期](https://segmentfault.com/a/1190000010336178)
+
 <img src="./img/mvvm.png" alt="">
 Model 模型、数据
 
