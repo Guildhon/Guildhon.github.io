@@ -68,7 +68,7 @@ function fn(n){
 }
 ```
 
-##### 遍历器（Iterator）转为数组
+#### 遍历器（Iterator）转为数组
 ```
 // 转为数组方法一
 [...string.matchAll(regex)]
@@ -76,3 +76,31 @@ function fn(n){
 // 转为数组方法二
 Array.from(string.matchAll(regex));
 ```
+
+#### 打印全排列
+```
+var str = "abc";
+var arr = str.split("");
+var len = arr.length;
+var newArr = [];
+function dfs(i) {
+	var v = arr.join("");
+	if (i == len) {         //  如果字符串有重复值 && newArr.indexOf(v) < 0
+		newArr.push(v);
+		return;
+	} else {
+		for (var j = i; j < len; j++) {
+			[arr[i],arr[j]] = [arr[j],arr[i]];
+			dfs(i+1);
+			[arr[i],arr[j]] = [arr[j],arr[i]];
+		}
+	}
+}
+dfs(0);
+console.log(newArr)
+```
+
+#### 闭包
+函数可以访问它被创建时所处的执行上下文环境，使得Javascript的垃圾回收机制不会收回子函数所占用的资源<a href="https://baike.baidu.com/item/%E9%97%AD%E5%8C%85/10908873#6_1">参考</a>
+
+
