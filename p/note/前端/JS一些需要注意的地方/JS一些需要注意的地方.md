@@ -1101,3 +1101,105 @@ throttled.cancel = function() {
     timeout = null;
 }
 ```
+
+#### 深拷贝与浅拷贝
+
+浅拷贝只是拷贝基本类型的数据，如果父对象的属性等于数组或另一个对象，那么实际上，子对象获得的只是一个内存地址，因此存在父对象被篡改的可能（浅拷贝只复制指向某个对象的指针，而不复制对象本身，新旧对象还是共享同一块内存）。深拷贝就是能够实现真正意义上的数组和对象的拷贝。它的实现并不难，只要递归调用"浅拷贝"就行了。（深拷贝会另外创造一个一模一样的对象，新对象跟原对象不共享内存，修改新对象不会改到原对象）
+
+浅拷贝
+```
+var people = {
+	name: 'jack'
+}
+var shallowCopy = function(obj) {
+    // 只拷贝对象
+    if (typeof obj !== 'object') return;
+    // 根据obj的类型判断是新建一个数组还是对象
+    var newObj = obj instanceof Array ? [] : {};
+    // 遍历obj，并且判断是obj的属性才拷贝
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            newObj[key] = obj[key];
+        }
+    }
+    return newObj;
+}
+var people = shallowCopy(people);
+alert(people.name);
+```
+
+深拷贝
+```
+var deepCopy = function(obj) {
+    if (typeof obj !== 'object') return;
+    var newObj = obj instanceof Array ? [] : {};
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            newObj[key] = typeof obj[key] === 'object' ? deepCopy(obj[key]) : obj[key];
+        }
+    }
+    return newObj;
+}
+```
+
+#### 数组扁平化
+
+数组的扁平化，就是将一个嵌套多层的数组 array (嵌套可以是任何层数)转换为只有一层的数组
+
+递归
+```
+// 方法 1
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+    var result = [];
+    for (var i = 0, len = arr.length; i < len; i++) {
+        if (Array.isArray(arr[i])) {
+            result = result.concat(flatten(arr[i]))
+        }
+        else {
+            result.push(arr[i])
+        }
+    }
+    return result;
+}
+
+
+console.log(flatten(arr))
+```
+toString
+```
+[1, [2, [3, 4]]].toString() // "1,2,3,4"
+
+// 方法2
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+    return arr.toString().split(',').map(function(item){
+        return +item
+    })
+}
+
+console.log(flatten(arr))
+
+```
+
+扩展运算符...
+```
+var arr = [1, [2, [3, 4]]];
+console.log([].concat(...arr)); // [1, 2, [3, 4]]
+
+// 方法4
+var arr = [1, [2, [3, 4]]];
+
+function flatten(arr) {
+
+    while (arr.some(item => Array.isArray(item))) {
+        arr = [].concat(...arr);
+    }
+
+    return arr;
+}
+
+console.log(flatten(arr))
+```
