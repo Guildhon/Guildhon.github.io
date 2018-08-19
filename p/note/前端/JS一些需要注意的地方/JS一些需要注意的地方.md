@@ -734,7 +734,7 @@ console.log(child2.colors); // ["red", "blue", "green"]
 ```
 
 缺点：调用两次父构造函数
-4.原型式继承
+##### 4.原型式继承
 
 ```
 function createObj(o) {
@@ -1203,3 +1203,163 @@ function flatten(arr) {
 
 console.log(flatten(arr))
 ```
+
+#### 柯里化
+
+用闭包把参数保存起来，当参数的数量足够执行函数了，就开始执行函数
+
+```
+function curry(fn, args) {
+    var length = fn.length;
+
+    args = args || [];
+
+    return function() {
+
+        var _args = args.slice(0),
+
+            arg, i;
+
+        for (i = 0; i < arguments.length; i++) {
+
+            arg = arguments[i];
+
+            _args.push(arg);
+
+        }
+        if (_args.length < length) {
+            return curry.call(this, fn, _args);
+        }
+        else {
+            return fn.apply(this, _args);
+        }
+    }
+}
+
+
+var fn = curry(function(a, b, c) {
+    console.log([a, b, c]);
+});
+
+fn("a", "b", "c") // ["a", "b", "c"]
+fn("a", "b")("c") // ["a", "b", "c"]
+fn("a")("b")("c") // ["a", "b", "c"]
+fn("a")("b", "c") // ["a", "b", "c"]
+```
+
+#### 偏函数
+
+柯里化是将一个多参数函数转换成多个单参数函数，也就是将一个 n 元函数转换成 n 个一元函数。
+
+局部应用则是固定一个函数的一个或者多个参数，也就是将一个 n 元函数转换成一个 n - x 元函数。
+
+#### 惰性函数
+
+惰性函数就是解决每次都要进行判断的这个问题，解决原理很简单，重写函数
+```
+var foo = function() {
+    var t = new Date();
+    foo = function() {
+        return t;
+    };
+    return foo();
+};
+```
+
+#### compose函数组合执行
+```
+function compose() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+        var i = start;
+        var result = args[start].apply(this, arguments);
+        while (i--) result = args[i].call(this, result);
+        return result;
+    };
+};
+```
+#### 函数记忆
+函数记忆是指将上次的计算结果缓存起来，当下次调用时，如果遇到相同的参数，就直接返回缓存中的数据
+```
+function memoize(f) {
+    var cache = {};
+    return function(){
+        var key = arguments.length + Array.prototype.join.call(arguments, ",");
+        if (key in cache) {
+            return cache[key]
+        }
+        else {
+            return cache[key] = f.apply(this, arguments)
+        }
+    }
+}
+var add = function(a, b, c) {
+  return a + b + c
+}
+
+var memoizedAdd = memoize(add)
+
+memoizedAdd(1, 2, 3)
+```
+
+#### 尾递归
+尾调用，是指函数内部的最后一个动作是函数调用。该调用的返回值，直接返回给函数
+
+#### 数组乱序
+Math.random() - 0.5 随机得到一个正数、负数或是 0，如果是正数则降序排列，如果是负数则升序排列，如果是 0 就不变，然后不断的升序或者降序，最终得到一个乱序的数组。
+```
+var values = [1, 2, 3, 4, 5];
+
+values.sort(function(){
+    return Math.random() - 0.5;
+});
+
+console.log(values)
+```
+v8 在处理 sort 方法时，当目标数组长度小于 10 时，使用插入排序；反之，使用快速排序和插入排序的混合排序
+
+当待排序元素跟有序元素进行比较时，一旦确定了位置，就不会再跟位置前面的有序元素进行比较，所以就乱序的不彻底。所以以上代码不适用
+
+应该是遍历数组元素，然后将当前元素与以后随机位置的元素进行交换，从代码中也可以看出，这样乱序的就会更加彻底
+```
+function shuffle(a) {
+    for (let i = a.length; i; i--) {
+        let j = Math.floor(Math.random() * i);
+        [a[i - 1], a[j]] = [a[j], a[i - 1]];
+    }
+    return a;
+}
+```
+
+#### 箭头函数
+1.没有this，所以需要通过查找作用域链来确定 this 的值
+
+因为箭头函数没有 this，所以也不能用 call()、apply()、bind() 这些方法改变 this 的指向，可以看一个例子：
+```
+var value = 1;
+var result = (() => this.value).bind({value: 2})();
+console.log(result); // 1
+```
+
+2.没有 arguments
+箭头函数没有自己的 arguments 对象，这不一定是件坏事，因为箭头函数可以访问外围函数的 arguments 对象
+
+3.不能通过 new 关键字调用
+
+JavaScript 函数有两个内部方法：[[Call]] 和 [[Construct]]。
+
+当通过 new 调用函数时，执行 [[Construct]] 方法，创建一个实例对象，然后再执行函数体，将 this 绑定到实例上。
+
+当直接调用的时候，执行 [[Call]] 方法，直接执行函数体。
+
+箭头函数并没有 [[Construct]] 方法，不能被用作构造函数，如果通过 new 的方式调用，会报错。
+
+```
+var Foo = () => {};
+var foo = new Foo(); // TypeError: Foo is not a constructor
+```
+
+4.没有原型
+
+5.没有super
