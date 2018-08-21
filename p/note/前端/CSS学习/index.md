@@ -324,3 +324,11 @@ ID选择器 100
 元素属性，优先级高，但不如important
 相同权重，后写的生效
 ```
+
+#### CSS属性可继承	
+```
+所有元素可继承：visibility和cursor。
+内联元素可继承：letter-spacing、word-spacing、white-space、line-height、color、font、font-family、font-size、font-style、font-variant、font-weight、text-decoration、text-transform、direction。
+终端块状元素可继承：text-indent和text-align。
+列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
+```
