@@ -113,6 +113,11 @@ console.log(newArr)
 
 可以用于模块化，封装私有变量
 
+闭包在理论上指可以访问其他作用域变量的函数, 因此理论上说在JavaScript中, 一切函数都是闭包;
+
+但实践中一般指, 创建这个函数的上下文已经返回 ,但函数可以仍然访问函数上下文之外的变量;
+
+
 
 #### js判断数据类型
 
@@ -1363,3 +1368,60 @@ var foo = new Foo(); // TypeError: Foo is not a constructor
 4.没有原型
 
 5.没有super
+
+#### 将-字符串转化为驼峰表示法
+```
+console.log(combo("a-bgs-iwj"));
+function combo(msg){
+    return msg.replace(/-[a-z]/g,function (v){
+        return v.substring(1).toUpperCase();
+    })
+}
+```
+
+#### 12345678转化成为12,345,678
+```
+var str = "12345678";
+console.log(changeMoney(str));
+function changeMoney(str){
+    str = str.split("").reverse();
+    var result = "";
+    var len = str.length; 
+    for (var i = 1; i <= len; i++) {
+        result += str[i-1]
+        if (i % 3 == 0 && i != len) {
+            result += ",";
+        }
+    }
+    return result.split("").reverse().join("");
+}
+```
+
+#### caller和callee
+caller 是返回一个对函数的引用，该函数调用了当前函数
+```
+var a = function (){
+    alert(a.caller);
+}
+var b = function (){
+    a();
+}
+
+
+b();  // 弹出b函数
+a();  // 弹出null
+```
+callee是返回正在被执行的function函数，也就是所指定的function对象的正文。
+arguments.callee：获得当前函数的引用
+```
+var a = function (){
+    alert(arguments.callee);
+}
+var b = function (){
+    a();
+}
+b();      // 弹a函数
+a();      // 弹a函数
+```
+
+void 0 === undefined

@@ -324,6 +324,7 @@ ID选择器 100
 元素属性，优先级高，但不如important
 相同权重，后写的生效
 ```
+<a href="https://www.cnblogs.com/zxjwlh/p/6213239.html">继承得到的优先级是自己添加的最低的优先级</a>
 
 #### CSS属性可继承	
 ```
@@ -332,3 +333,13 @@ ID选择器 100
 终端块状元素可继承：text-indent和text-align。
 列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
 ```
+
+#### BFC
+
+BFC 是指浏览器中创建了一个独立的渲染区域，该区域内所有元素的布局不会影响到区域外 元素的布局，这个渲染区域只对块级元素起作用
+
+#### 性能优化
+1.减少 http 请求次数：CSS Sprites, JS、CSS 源码压缩、雪碧图，懒加载预加载；网页 Gzip，CDN 托管，data 缓存 ，图片服务器
+2.用 innerHTML 代替 DOM 操作，减少 DOM 操作次数，优化 javascript性能
+3.当需要设置的样式很多时设置 className 而不是直接操作 style
+
