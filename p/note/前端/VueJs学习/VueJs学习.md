@@ -857,7 +857,95 @@ vue的整个实现流程
 
 
 
+#### Vuex
+<a href="https://vuex.vuejs.org/zh/">文档</a>
 
+##### State
 
+State是唯一的数据源
 
+单一状态树
 
+```
+const Count = {
+	template: `<div>{{count}}</div>`,
+	computed: {
+		count() {
+			return this.$store.state.count;
+		}
+	}
+}
+```
+
+##### Getters
+通过Getters可以派生出一些新的状态
+```
+const store = new Vuex.Store({
+	state: {
+		todos: [
+			{
+				id: 1,
+				text: '...',
+				done: true
+			},
+			{
+				id: 2,
+				text: '...',
+				done: false
+			}
+		]
+	},
+	getters: {
+		doneTodos: state => {
+			return state.todos.filter(todo => todo.done); //单个组件如果想要获取todo.done为真的列表
+		}
+	}
+});
+store.getters.doneTodos            // 在computed里
+```
+##### Mutations
+更改Vuex的store中的状态的唯一方法是提交mutation
+```
+const store = new Vuex.Store({
+	state: {
+		count: 1
+	},
+	mutations: {
+		increment(state){    // 函数名字随便写
+			// 变更状态
+			state.count++;
+		}
+	}
+});
+store.commit('increment');   // 可以直接提交改变，提交事件类型
+```
+
+##### Actions 
+Action提交的是mutation，而不是直接变更状态
+
+Action可以包含任何异步操作
+
+```
+const store = new Vuex.Store({
+	state: {
+		count: 1
+	},
+	mutations: {
+		increment(state){    
+			// 变更状态
+			state.count++;
+		}
+	},
+	actions: {         // 通过actions提交，多这一步是为了能写异步操作代码，mutations是同步的
+		incrementAction(context) {
+			context.commit('increment');
+		}
+	}
+});
+
+store.dispatch('incrementAction'); 
+```
+
+##### Modules
+
+面对复杂的应用程序，当管理的状态比较多时，我们需要将Vuex的store对象分割成模块

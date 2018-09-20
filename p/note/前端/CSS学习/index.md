@@ -343,3 +343,59 @@ BFC 是指浏览器中创建了一个独立的渲染区域，该区域内所有�
 2.用 innerHTML 代替 DOM 操作，减少 DOM 操作次数，优化 javascript性能
 3.当需要设置的样式很多时设置 className 而不是直接操作 style
 
+
+#### 一行显示，左侧文字，文字后面紧邻不定个icon，超出父元素长度，文字就显示为省略号，但icon仍要显示
+
+```
+<style type="text/css">
+    body {
+        margin: 0;    
+    }        
+    .container {    
+        display: flex;
+        align-items: center;    
+        background: red;
+        width: 300px;
+    }
+    .left-text {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+   }
+</style>
+<div class="container">
+   <div class="left-text">这是左边的文这是左边的文字这是左边的文字这是左边的文字这是左边的文字这是左边的文字字</div>
+   <div class="icon-container">    
+      <img src="1.JPG" alt="" width="30" height="30">
+   </div>
+</div>
+```
+
+#### 多列等高
+```
+<style>
+	#app {
+		width:  100%;
+		overflow: hidden;
+	}
+	.left {
+		width: 200px;
+		float: left;
+		background: yellow;
+		// word-break: break-all;
+		word-wrap: break-word;
+		padding-bottom: 2000px;
+		margin-bottom: -2000px;
+	}
+	.right {
+		margin-left: 100px;
+		background: #ccc;
+		padding-bottom: 2000px;
+		margin-bottom: -2000px;
+	}	
+</style>
+<div id="app">
+    <div class="left">12312-312312312312123123123123123123123123</div>
+    <div class="right">jiwer</div>
+</div>
+```
