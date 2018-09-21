@@ -356,6 +356,24 @@ options.async 异步共用代码块
 单页应用+第三方依赖+webpack生成代码 
 ```
 对于单个entry是没有用的，需要多个entry，提取公共代码
+```
+plugins: [
+    new webpack.optimize.CommonsChunkPlugin({      // 提取模块共同代码
+        name: 'common',
+        minChunks: 2,
+        chunks: ['pageA','pageB']
+    }),
+    new webpack.optimize.CommonsChunkPlugin({      // 提取公共vendor
+        name: 'vendor',
+        minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({      // 将webpack的代码单独打包出来
+        name: 'manifest',
+        minChunks: Infinity
+    })
+]
+```
+
 
 ##### 代码分割和懒加载
 1.使用webpack方法
@@ -377,7 +395,8 @@ require.ensure(['./subPageA'], function () {
 require.include 提取父子模块中的公共部分
 当前subPageA和subPageB模块里面import moduleA，通过require.include将moduleA抽离出来
 ```
-require.include('./moduleA');
+// pageA.js           
+require.include('./moduleA'); // moduleA会跟pageA打包到一起
 var page = 'subpageA';
 
 if (page === 'subpageA') {
@@ -420,6 +439,273 @@ if (page === 'subpageA') {
         console.log(subPageB);
     });
 }
+```
+使用async，打包多入口模块中的共同异步代码
+```
+new webpack.optimize.CommonsChunkPlugin({      
+    async: 'async-common',	
+    children: true  				// 子模块        				                    
+    minChunks: 2	
+}),
+```
+
+##### 处理CSS
+引入CSS
+```
+style-loader创建一个标签style，插入到html中  
+css-loader处理让js可以import一个css进来
+
+在app.js里引入css，打包生成app.bundle.js，渲染出来的html是创建style插入
+var path = require('path');
+module.exports = {
+    entry: {
+        app: './src/app.js'
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader'
+                    }
+                ]
+            },
+
+        ]
+    }
+}
+```
+style-loader
+```
+style-loader/url把css代码抽离出来，渲染出来的html是通过创建link引入
+缺点就是app.js里import一个就创建一个link，这样会造成网络请求增加
+var path = require('path');
+module.exports = {
+    entry: {
+        app: './src/app.js'
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: "./dist/",
+        filename: '[name].bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader/url'
+                    },
+                    {
+                        loader: 'file-loader'
+                    }
+                ]
+            },
+
+        ]
+    }
+}
+
+style-loader/useable
+可以逻辑控制样式，对style标签插入和删除
+//webpack.config.js
+const path = require('path');
+module.exports = {
+    entry: {
+        app: './src/app.js'
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: "./dist/",
+        filename: '[name].bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader/useable'
+                    },
+                    {
+                        loader: 'css-loader'
+                    }
+                ]
+            },
+
+        ]
+    }
+}
+// app.js
+import base from './css/base.css'
+var flag = false;
+setInterval(function () {
+    if (flag) {
+        base.unuse();
+    } else {
+        base.use();
+    }
+    flag = !flag;
+}, 1000);
+```
+style-loader可以进行配置
+```
+options
+insertAt(插入位置)
+insertInto(插入到DOM'#app')
+singleton(是否只使用一个style标签)
+transform(转化，浏览器环境下，插入页面前) 设置一个js文件路径，作用是判断可以逻辑判断当前浏览器版本，对css做一个形变
+```
+css-loader
+```
+options
+alias(解析的别名)
+importLoader(@import)
+minimize(是否压缩)
+modules(启用css-modules)
+
+modules: true,
+localIdentName: '[path][name]_[lcoal]_[hash:base64:5]' // 给模块的class起名字，不然就是webpack自定义的名字
+// base.css可以模块化引入
+.box {
+    composes: bigBox from './common.css';
+    height: 120px;
+    width: 200px;
+    border-radius: 4px;
+    background: #333;
+}
+// common.css
+.bigBox {
+    border: 10px solid green;
+}
+```
+配置less/sass
+```
+使用less-loader
+{
+    loader: 'css-loader',
+    options: {
+        minimize: true,
+        modules: true,
+        localIdentName: '[path][name]_[local]_[hash:base64:5]'
+    }
+},
+{
+    loader: 'less-loader'
+}
+```
+提取css代码，有两种方式，一种是extra-loader,一种是ExtractTextWebpackPlugin
+```
+const path = require('path');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+module.exports = {
+    entry: {
+        app: './src/app.js'
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: "./dist/",
+        filename: '[name].bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.less$/,
+                use: ExtractTextWebpackPlugin.extract({
+                    fallback: {             // 提取失败
+                        loader: 'style-loader',
+                        options: {
+                            singleton: true
+                        }
+                    },
+                    use: [                  // 提取前处理
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                minimize: true,
+                                modules: true,
+                                localIdentName: '[path][name]_[local]_[hash:base64:5]'
+                            }
+                        },
+                        {
+                            loader: 'less-loader'
+                        }
+                    ]
+                }),
+            },
+        ]
+    },
+    plugins: [
+        new ExtractTextWebpackPlugin({
+            filename: '[name].min.css'
+        })
+    ]
+}
+```
+postcss 需要安装postcss,postcss-loader
+```
+// 相应插件
+autoprefixer     // 加浏览器前缀
+css-nano         // 优化，压缩css css-loader设置minimize
+css-next		 // 使用css新语法，比如calc等 
+
+{
+    loader: 'postcss-loader',
+    options: {
+        ident: 'postcss',
+        plugins: [
+            // require('autoprefixer')(),
+            require('postcss-cssnext')()
+        ]
+    }
+}
+
+可以在package.json里配置browserslist比如
+"browserslist": [
+	">= 1%",
+	"last 2 versions"
+]
+也可以单独建立一个.browserslistrc
+```
+##### Tree Sharking
+打包的时候去掉一些没有用到的代码
+
+使用场景，代码优化
+JS Tree Sharking
+```
+// 本地自己写的一些模块
+plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+]
+
+如果是lodash，即使是使用一个方法，打包以后还是会很大，不方便webpack使用tree sharking，需要通过各种方法兼容
+```
+
+CSS Tree Sharking
+使用purifycss-webpack
+```
+options paths: glob.sync([])
+
+var glob = require('glob-all');        // 再装这个
+var PurifyCss = require('purifycss-webpack');
+plugins: [ 
+	new ExtractTextWebpackPlugin({
+        filename: '[name].min.css'        
+    }),
+    new PurifyCss({          // 如果有ExtractTextWebpackPlugin，需要放在其后面
+		path.resolve(__dirname,'./*.html'),
+		path.resolve(__dirname,'./src/*.js')
+    })
+]
 ```
 
 
