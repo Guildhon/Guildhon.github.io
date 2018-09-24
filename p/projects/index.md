@@ -5,7 +5,7 @@ My Projects
 2018
 ----
 
-- [仿去哪儿网](/project-code/travel/index.html)
+- [仿去哪儿网](/projectcode/travel/index.html)
 
 2017
 ----
