@@ -770,8 +770,253 @@ img-loader压缩图片
 ```
 
 字体文件
-
+```
+{
+/* 字体文件 */
+test: /\.(eot|woff2?|ttf|svg)$/,
+use: [{
+  loader: 'url-loader',
+  options: {
+    name: '[name]-[hash:5].[ext]',
+    /* 超出 5000 处理成 base64 */
+    limit: 5000,
+    /* 图片地址不对, 设置绝对路径 */
+    publicPath: '',
+    /* 放到 dist 目录 */
+    outputPath: 'dist/',
+    /* 设置相对路径 */
+    useRelativePath: true
+  }
+}]
+}
+```
 第三方JS库
+ 
+webpack.providePlugin  
+```
+plugins: [                     // 使用npm下载管理的
+	new webpack.ProvidePlugin({
+		$: 'jquery'
+	})
+]
+```
+在module.exports里
+```
+resolve: {
+    alias: {
+        jquery$: path.resolve(__dirname, 'src/libs/jquery.min.js')   // 解析从其他地方的文件
+    }
+}
+```
+使用imports-loader
+```
+{
+test: path.resolve(__dirname, 'src/app.js'),
+use: [
+    {
+        loader: 'imports-loader',
+        options: {
+            $: 'jquery'
+        }
+    }
+]
+}
+```
+webpack处理html  自动载入引用的文件 自动生成html
+HtmlWebpackPlugin
+```
+options
+	template
+	filename
+	minify
+	chunks
+	inject  
+
+Plugins: [
+	new HtmlWebpackPlugin({
+		filename: 'index.html',       // 模板文件
+		template: './',
+		// inject: false          // 不把生成的路径添加到html中
+		chunks: ['app'],           // 多入口，只会把app的相关插入中html中
+		minify: {
+			collapseWhitespace: true        // html压缩空格
+		}
+	})
+]
+```
+html中引入的图片
+html-loader
+```
+options
+	attrs:[img:src ]
+
+{
+	test: /\.html$/,
+	use: [
+		{
+			loader: 'html-loader',
+			options: {
+				attrs: ['img:src','img:data-src']
+			}
+		}
+	]
+}
+```
+
+配合优化
+提前载入webpack加载代码，把提取出来的js放置进去
+inline-mainfest-webpack-plugin
+html-webpack-inline-chunk-plugin
+
+##### 搭建开发环境
+express+webpack-dev-middleware
+
+webpack watch mode
+```
+webpack -w --progress --display-reasons --color
+```
+webpack-dev-server 开发服务器 不需要require
+live reloading自动刷新，不生成打包文件，路径重定向，支持https，支持浏览器中显示编译错误，接口代理，模块热更新
+```
+devServer
+	inline     默认true,false页面看到打包状态
+	contentBase
+	port
+	historyApiFallback  设置为true，所有页面重定向到主页，可加规则 
+	https,
+	proxy    代理远程接口请求  http-proxy-middleware(options target changeOrigin headers logLevel pathRewrite)
+	hot		 热更新，保持应用的数据状态，节省调试时间，样式调试更快
+	openpage 最先打开哪个页面
+	lazy     懒模式，只有访问资源才会编译
+	overlay  遮罩显示错误
+
+在package.json里scripts里添加
+{"server": "webpack-dev-server --open"}
+moudle.export = {
+	devServer: {
+		port: 9001，
+		proxy: {                      // 可以解决开发时请求接口跨域
+			/*'/api': {
+				target: 'https://xxxx',
+				changeOrigin: true,
+				logLevel: "debug"         // 控制台看到信息
+			}*/
+			'/': {
+				target: 'https://xxxx',
+				changeOrigin: true,
+				logLevel: "debug",        // 控制台看到信息
+				pathRewrite: {
+					'^/comments': '/api/comments'   // 省略剩下comments
+				},
+				headers: {
+					'Cookie': '放置cookies' // 调试阶段放置
+				}
+			}
+		},
+		hot: true,         // 热更新
+		historyApiFallback: {
+			rewrites: [
+				{
+					from: '/pages/a',
+					to: '/pages/a.html'
+				}
+			]
+		}
+	},
+	Plugin: [
+		new webpack.HotModuleReplacementPlugin(),        // 配置热更新
+		new webpack.NameModulesPlugin()                  // 看到控制台输出
+	]
+}
+```
+
+##### source map调试 
+
+webpack.SourceMapDevToolPlugin
+
+webpack.EvalSourceMapDevToolPlugin
+
+Devtool
+```
+Development
+Production
+
+module.exports = {
+	devtool: 'cheap-module-source-map',
+}
+在各个test的option里sourceMap:true
+```
+
+##### EsLint检查代码规范
+eslint eslint-loader eslint-plugin-html eslint-friendly-formatter 在webpack config里.eslintrc.*
+
+package.json中的eslintConfig
+
+##### 开发环境和生产环境
+生产环境
+提取公共代码
+压缩混淆
+文件压缩或是base64编码
+去除无用的代码
+
+共同点
+同样的入口 
+同样的代码处理（loader）
+同样的解析配置
+
+如何做？webpack-merge拼接配置
+```
+webpack.dev.conf.js
+webpack.pro.conf.js
+webpack.common.conf.js
+
+webpack-dev-server --env development --open --config build/webpack.common.config.js  // 判断env是啥，然后merge不同的js 
+
+const productionConfig = require('./webpack.prod.conf')
+const developmentConfig = require('./webpack.dev.conf')
+const merge = require('webpack.merge');
+const generateConfig = env => {
+	return 配置对象
+}
+module.exports = env => {
+	let config = env === 'production' ? productionConfig : developmentConfig;
+	return merge(gengerateConfig(env),config)
+}
+```
+
+##### 问题
+1.webpack和gulp不同？
+
+webpack是一个模块打包器，可以递归的打包项目中的所有模块，最后生成几个打包后的文件。最大不同在于支持code-splitting、模块化（AMD,ESM,COMMONJS）,全局分析。gulp只是执行任务。
+
+2.什么是bundle,什么是chunk,什么是module?
+
+bundle是由webpack打包出来的文件，chunk是指webpack在进行模块的依赖分析的时候，代码分割出来的代码块，module是开发中的单个模块
+
+3.什么事Loader?什么是Plugin?
+
+Loaders是用来告诉webpack如何转化处理某一类型的文件，并且引入到打包出的文件中
+
+Plugin是用来自定义webpack打包过程的方式，一个插件是含有含有apply方法的一个对象，通过这个方法可以参与到整个webpack打包的各个流程（声明周期）比如删除目录，压缩，分析，混淆代码等等
+
+如何可以自动生成webpack配置？使用脚手架
+
+4.webpack-dev-server和http服务器如nginx有什么区别？
+
+webpack-dev-server使用内存来存储webpack开发环境下的打包文件，并且可以使用模块热更新，他比传统的http服务对开发更加简洁高效
+
+5.什么是模块热更新？
+
+模块热更新是webpack的一个功能，他可以使得代码修改过后不用刷新浏览器就可以更新
+
+6.什么是长缓存？在webpack中如何做到长缓存优化？
+
+浏览器在用户访问页面的时候，为了加快加载速度，会对用户访问的静态资源进行缓存，但是每一次代码升级或是更新，都需要浏览器去下载新的代码，最方便和简单的方式就是引入新的文件名称。在webpack中可以在output给输出的文件指定chunkhash，并且分离经常更新的代码和框架代码。通过NamedModulesPlugin或是HashedModulesIdsPlugin使再次打包文件名不变
+
+7.什么是Tree-shaking?CSS可以Tree-shaking吗？
+
+Tree-shaking是指在打包中去除那些引入了，但是代码中没有使用的那些死代码。在webpack中Tree-shaking是通过uglifyJSPlugin来Tree-shaking JS。CSS需要使用Purify-CSS
+
 
 
 
