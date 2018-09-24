@@ -708,6 +708,70 @@ plugins: [
 ]
 ```
 
+##### 文件处理
+图片文件
+CSS中引入的图片 自动合成雪碧图 压缩图片 base64编码
+file-loader  postcss-sprites img-loader url-loader（base64）
+```
+// 下面场景为src的css目录下的css文件引用src下assets的图片，都打包到dist目录
+{
+    test: /\.(png|jpg|jpeg|gif)$/,
+    use: [
+        {
+            loader: 'file-loader',
+            options: {
+                publicPath: './assets/imgs/',	     // 设置绝对路径，css文件会被修改
+                outputPath: '',
+                useRelativePath: true               // 设置相对路径
+            }
+        }
+    ]
+}
+```
+使用url-loader，比file-loader多了个转化base64的功能 
+```
+{
+    loader: "url-loader",
+    options: {
+        name: '[name][hash:5].min.[ext]',
+        publicPath: './assets/imgs/',
+        outputPath: './assets/imgs/',
+        limit: 100000           // 小于10k转成base64
+    }
+}
+```
+img-loader压缩图片
+```
+{
+	loader: "img-loader",
+	options: {
+	    pngquant: {
+	        quality: 80
+	    }
+	}	
+}
+``` 
+生成雪碧图
+```
+{
+    loader: 'postcss-loader',
+    options: {
+        ident: 'postcss',
+        plugins: [
+            require('postcss-sprites')({
+                spritePath: 'dist/assets/imgs/',
+                retina: true                   // 适应retina屏幕
+                
+            }),
+            require('postcss-cssnext')()
+        ]
+    }
+}	
+```
+
+字体文件
+
+第三方JS库
 
 
 
