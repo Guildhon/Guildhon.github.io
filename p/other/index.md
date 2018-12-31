@@ -1,4 +1,4 @@
-ECMAScript 6 入门Other
+Other
 -------- 
 > 其他
 
