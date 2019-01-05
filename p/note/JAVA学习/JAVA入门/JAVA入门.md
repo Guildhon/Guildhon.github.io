@@ -157,3 +157,302 @@ Object类是所有类的父类，如果一个类没有使用extends关键字明�
 1.toString返回的对象的哈希code码；
 2.equals比较对象的引用是否指向同一块内存地址；
 
+##### 多态
+对象的多种形态
+1.引用多态，父类的引用可以指向本类的对象，也可以指向子类的对象
+```
+Dog extends Animal
+
+Animal obj1 = new Animal();
+Animal obj2 = new Dog(); // 父类引用可以指向子类对象，子不能指向父
+```
+2.方法多态,创建本类对象时，调用的方法为本类的方法；创建子类对象时，调用的方法为子类重写的方法或者继承的方法
+```
+obj1.eat();   // 调用Animal的eat方法
+obj2.eat();   // 调用Dog的eat方法
+
+Cat obj3 = new Cat();       // Cat没有eat方法
+obj3.eat(); // 调用继承Animal的eat方法
+
+obj2.watchDoor();         // 如果Dog类中有watchDoor方法，Animal没有，将报错
+```
+引用类型转换
+1.向上类型转换（隐式/自动类型转换），是小类型到大类型的转换；
+2.向下类型转换（强制类型转换），是大类型到小类型；
+3.instanceof运算符，来解决引用对象的类型，避免类型转换的安全性问题。
+```
+Dog dog = new Dog();
+Animal animal = dog; // 自动类型提升，向上类型转换
+
+Dog dog2 = animal;  // 编辑器报错，认为存在风险
+Dog dog2 = (Dog)animal; // 向下类型转换，强制类型转换
+
+Cat cat = (Dog)animal;  // 1.编译时Cat类型 2.运行时Dog类型 报错
+
+if (animal instanceof Cat) {    // 改进
+	Cat cat = (Dog)animal; 
+} else {
+	System.out.println("无法进行类型转换");
+}
+```
+抽象类
+
+抽象类前使用abstract关键字修饰，则该类为抽象类
+a.在某些场景下，某个父类只是知道其子类应该包含怎样的方法，但无法准确知道这些子类如何实现这些方法
+b.从多个具有相同特性的类中抽象出一个抽象类，以这个抽象类作为子类的模板，从而避免子类设计的随意性
+
+作用：限制规定子类必须实现某些方法，但不关注实现细节
+
+使用规则：
+a.abstract定义抽象类
+b.abstract定义抽象方法，只能声明，不需要实现
+c.包含抽象方法的类是抽象类
+d.抽象类中可以包含普通的方法，也可以没有抽象方法
+e.抽象类不能直接创建，可以定义引用变量
+```
+public abstract class Telephone {
+	public abstract void call();     // 抽象方法没有方法体以分号结束
+	public abstract void message();   
+}
+public class CellPhone extends Telephone {
+	public void call(){
+		System.out.println("通过键盘打电话");
+	}
+	public void message(){
+		System.out.println("通过键盘发短信");
+	}
+}
+
+public class SmartPhone extends Telephone {
+	public void call(){
+		System.out.println("通过语音打电话");
+	}
+	public void message(){
+		System.out.println("通过语音发短信");
+	}
+}
+
+Telephone tel1 = new CellPhone();
+tel1.call();
+Telephone tel2 = new SmartPhone();
+tel2.call();
+```
+##### 接口
+[定义语法](https://img.mukewang.com/5c2c779d00015a3d12800720.jpg) [使用语法](https://img.mukewang.com/5c1f8e940001fc4212800720.jpg)
+类是一个具体实现体，而接口定义了某一批类所需要遵循的规范，接口不关心这些类的内部数据，也不关心这些类里方法的实现细节，它只规定这些类里必须提供某些方法
+
+接口定义和类定义不同，定义接口不再使用class关键字，而是使用interface关键字
+
+接口中的属性是常量，即使定义时不加上pulic static final修饰符，系统也会自动加上
+
+使用接口，一个类可以实现一个或多个接口，实现接口使用implements关键字，java中一个类只能继承一个类，是不够灵活的，通过实现多个接口来弥补
+
+```
+// 假设CellPhone和SmartPhone都是继承抽象Telphone，martPhone又有玩游戏的功能，PSP也是，使用接口给PSP和SmartPhone使用
+public abstract interface IPlayGame{    //省掉abstract系统会自动带上	
+	public abstract void PalyGame();
+}
+public class SmartPhone extends Telephone implements IPlayGame{
+	public void call(){
+		System.out.println("通过语音打电话");
+	}
+	public void message(){
+		System.out.println("通过语音发短信");
+	}
+	public void PlayGame(){
+		System.out.println("玩游戏的功能");
+	}
+}
+public class Psp implements IPlayGame{
+	public void PlayGame(){
+		System.out.println("玩游戏的功能");
+	} 
+}
+IPlayGame ip1 = new SmartPhone();
+ip1.playGame();
+IPlayGame ip2 = new Psp();
+ip2.playGame();
+```
+使用接口：接口在使用过程中，还经常与内部匿名类配合使用，匿名内部类就是没有名字的内部类，多用于关注实现而不关注实现类的名称
+```
+语法格式：
+interface i = new Interface(){
+	public void method(){
+		System.out.println("匿名内部类实现接口的方式");
+	}
+}
+
+
+IPlayGame ip3 = new IPlayGame(){
+	public void playGame(){
+		System.out.println("匿名内部类实现接口的方式");
+	}
+};
+ip3.playGame();
+```
+
+##### 字符串
+字符串对象如果只需比较内容是否相同，应使用 ”equals()” 方法
+```
+String s1 = "string";  // 字符常量，只创建一个
+String s2 = "string";
+s1 == s2; // true
+String s3 = new String("string");
+String s4 = new String("string");
+s2 == s3; // false
+s3 == s4; // false
+```
+
+##### 包装类
+为了让基本数据类型也具备对象的特性，Java为每个基本数据类型都提供了一个包装类，这样我们就可以像操作对象那样来操作基本数据类型
+```
+public class HelloWorld {
+    public static void main(String[] args) {
+        
+		// 定义int类型变量，值为86
+		int score1 = 86; 
+        
+		// 创建Integer包装类对象，表示变量score1的值
+		Integer score2=new Integer(score1);
+        
+		// 将Integer包装类转换为double类型
+		double score3=score2.doubleValue();
+        
+		// 将Integer包装类转换为float类型
+		float score4=score2.floatValue();
+        
+		// 将Integer包装类转换为int类型
+		int score5 =score2.intValue();
+
+		System.out.println("Integer包装类：" + score2);
+		System.out.println("double类型：" + score3);
+		System.out.println("float类型：" + score4);
+		System.out.println("int类型：" + score5);
+	}
+}
+```
+装箱：把基本类型转换成包装类，使其具有对象的性质，又可分为手动装箱和自动装箱
+```
+int i = 10;
+Integer x = new Integer(i);   // 手动装箱
+Integer y = i;                // 自动装箱
+```
+拆箱：和装箱相反，把包装类对象转换成基本类型的值，又可分为手动拆箱和自动拆箱
+```
+Integer j = new Integer(8);   // 定义一个Integer包装类对象，值为8
+int m = j.intValue();         // 手动拆箱为int类型
+int n = j;                    // 自动拆箱为int类型
+```
+```
+public class HelloWorld {
+    public static void main(String[] args) {
+        
+        // 定义double类型变量
+		double a = 91.5;
+        
+         // 手动装箱
+		Double b =  new Double(a);
+        
+        // 自动装箱
+		Double c = a;
+
+        System.out.println("装箱后的结果为：" + b + "和" + c);
+        
+        // 定义一个Double包装类对象，值为8
+		Double d = new Double(87.0);
+        
+        // 手动拆箱
+		double e = d.doubleValue();
+        
+        // 自动拆箱
+		double f = d;
+        
+         System.out.println("拆箱后的结果为：" + e + "和" + f);
+	}
+}
+```
+基本数据类型和字符串之间进行转换
+有三种方法：
+1.使用包装类的 toString() 方法
+2.使用String类的 valueOf() 方法
+```
+int c = 10;
+String str1 = Integer.toString(c);
+String str2 = String.valueOf(c);
+String str3 = c + "";
+```
+将字符串转换成基本类型有两种方法
+1.调用包装类的 parseXxx 静态方法
+2.调用包装类的 valueOf() 方法转换为基本类型的包装类，会自动拆箱
+```
+String str = "8";
+int d = Integer.parseInt(str);
+int e = Integer.valueOf(str);
+```
+使用 Date 和 SimpleDateFormat 类表示时间
+```
+Date now = new Date();
+SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+ystem.out.println(sdf1.format(now));
+
+String d = "2014-6-1 21:05:36";
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+Date date = sdf.parse(d);
+```
+Calendar 类的应用，
+java.util.Calendar 类是一个抽象类，可以通过调用 getInstance() 静态方法获取一个 Calendar 对象，此对象已由当前日期时间初始化，即默认代表当前时间，如 Calendar c = Calendar.getInstance();
+
+Calendar 类提供了 getTime() 方法，用来获取 Date 对象，完成 Calendar 和 Date 的转换，还可通过 getTimeInMillis() 方法，获取此 Calendar 的时间值，以毫秒为单位
+
+##### 集合
+java中的集合类：是一种工具类，就像是容器，存储任意数量的具有共同属性的对象
+
+Collection接口，子接口以及实现类，是List,Set,Queue接口的父接口，定义了集合操作的方法-增删改查
+
+List接口及其实现类：ArrayList，List是元素有序并且可以重复的集合，被称为序列；
+List可以精确的控制每个元素的插入位置，或删除某个位置的元素；
+ArrayList--数组序列，是List的一个重要实现类；
+ArrayList底层是由数组实现的；
+add添加一个，adAll添加多个，对象存入集合都变成object类型，get取出需要类型转换
+
+###### 异常Excption
+1、非检查异常RuntimeExcption，空指针异常，数据越界异常......
+2、检查异常，文件异常，SQL异常
+
+try-catch-finally catch(可以写多个不同类型)
+
+异常抛出throw throws
+
+自定义异常 
+```
+class 自定义异常类 extends 异常类型{
+
+}
+```
+异常链
+```
+public class ChainTest{
+	public static void main(String args[]){
+		ChianTest ct = new ChainTest();
+		try {
+			ct.test2();
+		} catch (Exception e) {
+			e.printStackTrace(); // 打印输出异常
+		}
+	}
+	public void test1() throws DrunkException{
+		throw new DrunkException("开车别喝酒");
+	}
+	public void test2(){
+		try {
+			test1();
+		} catch(DrunkException e){
+			RuntimeException newExc = new RuntimeException("司机一滴酒");
+			newExc.initCause(e); // 包装异常 
+			throw newExc;
+		}
+	}
+}
+```
+
+
