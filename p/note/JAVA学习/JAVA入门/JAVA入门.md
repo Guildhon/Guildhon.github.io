@@ -415,6 +415,19 @@ ArrayList--数组序列，是List的一个重要实现类；
 ArrayList底层是由数组实现的；
 add添加一个，adAll添加多个，对象存入集合都变成object类型，get取出需要类型转换
 
+泛型规定了某个集合只可以存放特定类型的对象 
+
+Set接口及其实现类：HashSet，Set元素无序并且不可以重复的集合，被称为集;
+HashSet--哈希集，是Set的一个重要实现类;
+
+Map接口-Map提供了一种映射关系，其中的元素是以键值对（key,value）的形式存储的，能够实现根据key快速查找value；
+Map中的键值对以Entry类型的对象实例形式存在;
+键（key）不可重复，value可以；设置put方法，迭代key对象，获取get方法；
+Map支持泛型，形式如Map<K,V>；
+HashMap基于哈希表实现，其中的Entry对象是无序排列的，Key和value都可以为null，但是一个HashMap只能有一个key值为null的映射（key不可重复）
+
+Comparable和Comparator（临时）接口，可以对对象排序，对象要实现接口，重写compareTo方法
+
 ###### 异常Excption
 1、非检查异常RuntimeExcption，空指针异常，数据越界异常......
 2、检查异常，文件异常，SQL异常
@@ -454,5 +467,54 @@ public class ChainTest{
 	}
 }
 ```
+
+#### File类
+java.io.File用于表示文件（目录）的信息（名称，大小等），创建，不能用于文件内容的访问
+
+RandomAccessFile java提供的对文件内容的访问，既可以读文件，也可以写文件，支持随机访问文件，访问任意位置
+
+1.java文件模型，在硬盘上的文件时byte byte byte存储的，是数据的集合
+
+2.打开文件，有两种模式"rw"（读写）, 'r'（只读）
+
+RandomAccessFile raf = new RandomAccessFile(file,'rw');文件指针，打开文件时指针在开头pointer = 0;
+
+3.写方法，raf.write(int) -> 只写一个字节（后8位），同时指针指向下一个位置，准备再次写入
+
+4.读方法，int b = raf.read() ->读一个字节
+
+5.文件读写以后一定要关闭
+
+IO流（输入流，输出流）
+字节流，字符流
+1.字节流
+1） InputStream抽象了应用程序读取数据的方式，
+	OuputStream抽象了应用程序写出数据的方式
+2） EOF = End 读到-1就读到结尾
+3） 输入流基本方式
+int b = in.read(); 读取一个字节无符号填充到int低八位，-1是EOF.
+in.read(byte[] buf) 读取数据填充到字节数据buf
+in.read(byte[] buf, int start, int size) 读取数据填充到字符数据buf，从start位置开始存放size长度的数据
+4） 输出流基本方式
+out.write(int b) 写出一个byte到流，b的低8位
+out.write(byte[] buf) 将buf字节数组都写入到流
+out.write(byte[] buf,int start,int size) 字节数组buf从start位置开始写size长度的字节到流
+5）FileInputStream -> 具体实现了在文件上写入数据
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
