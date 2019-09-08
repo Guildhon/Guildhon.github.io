@@ -226,3 +226,84 @@ gzip 1.txt
 - bunzip2 压缩文件 #解压缩，-k保留压缩文件
 
 常用压缩格式：.tar.gz，.tar.bz2
+
+#### .tar.gz格式压缩
+##### 打包命令 tar
+- -c 打包
+- -v 显示过程
+- -f 显示打包后的文件名
+
+```
+tar -cvf mulu.tar mulu
+gzip mulu.tar
+```
+#### 解打包 tar -xvf 打包文件名
+- x 解打包
+
+```
+tar -xvf mulu.tar 
+```
+
+其实.tar.gz格式是先打包为.tar格式，再压缩为.gz格式
+- tar -zcvf 压缩包名.tar.gz 源文件
+  -z 压缩为.tar.gz格式
+- tar -zxvf 压缩包名.tar.gz
+  -x 解压缩.tar.gz格式
+
+#### .tar.bz2格式压缩
+两步
+```
+tar -cvf mulu.tar mulu
+bzip2 mulu.tar
+```
+一步
+- tar -jcvf 压缩包名.tar.bz2 源文件
+  -j 压缩为.tar.bz2格式
+- tar -jxvf 压缩包名.tar.bz2
+  -x 解压缩.tar.bz2格式
+
+```
+tar -jxvf mulu.tar.bz2 -C /tmp/ # 解压到指定位置
+```
+
+#### 查看压缩包里的内容： tar -ztvf test.tar.gz
+
+### 关机和重启命令
+#### shutdown命令 
+shutdown [选项] 时间
+- -c 取消前一个关机时间
+- -h 关机
+- -r 重启
+
+```
+shutdown -r 05:30 &  # 后台运行，指定时间到重启
+```
+
+#### 其他关机命令 
+```
+halt
+poweroff
+init 0
+```
+#### 其他重启命令
+```
+reboot
+init 6
+```
+#### 退出命令
+```
+logout
+```
+
+### 其他常用命令
+#### 挂载命令
+##### 查询与自动挂载
+mount 查询系统中已经挂载的设备
+
+mount -a 依据配置文件/etc/fstab的内容，自动挂载
+
+mount [-t 文件系统] [-o 特殊设备] 设备文件名 挂载点
+- -t 文件系统，加入文件系统类型来指定挂载的类型，可以ext3,ext4,iso96660等文件系统
+- -o 特殊选项，可以指定挂载的额外选项
+
+##### 用户登录查看和用户交互命令
