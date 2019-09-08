@@ -9,3 +9,4 @@ My Note
 - [算法](算法/index.md)
 - [数据结构](数据结构/index.md)
 - [工具](工具/index.md)
+- [Linux](Linux/index.md)
