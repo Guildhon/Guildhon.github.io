@@ -303,7 +303,24 @@ mount 查询系统中已经挂载的设备
 mount -a 依据配置文件/etc/fstab的内容，自动挂载
 
 mount [-t 文件系统] [-o 特殊设备] 设备文件名 挂载点
-- -t 文件系统，加入文件系统类型来指定挂载的类型，可以ext3,ext4,iso96660等文件系统
+- -t 文件系统，加入文件系统类型来指定挂载的类型，可以ext3,ext4,iso9660等文件系统
 - -o 特殊选项，可以指定挂载的额外选项
 
-##### 用户登录查看和用户交互命令
+挂载光盘
+```
+mkdir /mnt/cdrom/  # 建立挂载点
+mount -t iso9660 /dev/sr0 /mnt/cdrom   # 挂载光盘
+```
+卸载光盘
+```
+umount 设备文件名或挂载点
+umount /mnt/cdrom
+```
+挂载U盘，Linux默认是不支持NTFS文件系统的
+```
+fdisk -l # 查看U盘设备文件名
+mount -t vfat /dev/sdb1 /mnt/usb 
+```
+#### 用户登录查看和用户交互命令
+##### w命令
+w 用户名
