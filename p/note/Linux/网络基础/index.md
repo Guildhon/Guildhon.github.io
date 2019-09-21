@@ -154,3 +154,76 @@ nameserver 183.60.83.19         # 名称服务器，dns服务器
 nameserver 183.60.82.98
 ```
 
+#### 虚拟机
+网络连接模式
+桥接，能跟局域网机器通信，用真实网卡通信，NAT能跟公网通信
+
+### 网络命令
+windows ipconfig  /all
+
+#### 关闭与启动网卡
+```
+ifconfig  查看网卡
+ifdown 网卡设备名 # 禁用该网卡设备
+ifup   网卡设备名 # 启用该网卡设备
+```
+
+### 查询网络状态
+#### netstat
+- -t 列出TCP协议端口
+- -u 列出UDP协议端口
+- -n 不适用域名与服务名，而使用IP地址和端口号，显示更快，不用翻译域名
+- -l 仅列出在监听状态网络服务
+- -a 列出所有的网络连接
+- -r 列出路由列表，功能和routes命令一致，可以看到网关
+
+#### routes
+routes -n = netstat -rn
+```
+routes add default gw 192.168.1.1 # 临时设置网关
+```
+
+#### nslookup
+用来翻译域名对应那个IP
+```
+nslookup 域名
+
+nslookup
+> server  # 查看本机DNS机器
+> quit
+```
+
+### 网络测试
+#### ping ip或者域名  
+探测指定IP或域名的网络状况
+- -c 次数 指定ping包的次数
+
+#### telnet [域名或IP] [端口]
+远程登录与端口探测命令
+```
+yum list telnet*              列出telnet相关的安装包
+yum install telnet-server          安装telnet服务
+yum install telnet.*           安装telnet客户端
+```
+
+#### traceroute [选项] IP或域名
+路由跟踪命令
+- -n 使用IP，不使用域名，速度更快
+
+#### wget
+下载命令
+
+#### tcpdump
+tcpdump -i eht0 -nnX port 21
+- -i 指定网卡接口
+- -nn 将数据包中的域名与服务转化为IP和端口
+- -X 以十六进制和ASCII码显示数据报内容
+- port 监听端口
+
+### SSH
+``` 
+ssh 用户名@ip  # 远程登录指定的Linux服务器
+scp [-r] 用户名@ip:文件路径 本地路径   # 下载文件
+scp [-r] 本地文件 用户名@ip:上传路径   #上传文件 
+```
+
