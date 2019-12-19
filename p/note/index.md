@@ -10,3 +10,5 @@ My Note
 - [数据结构](数据结构/index.md)
 - [工具](工具/index.md)
 - [Linux](Linux/index.md)
+- [Go学习](Go学习/index.md)
+- [区块链学习](区块链/index.md)
